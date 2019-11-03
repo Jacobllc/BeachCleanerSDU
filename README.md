@@ -1,8 +1,11 @@
 # BeachCleanerSDU
-## Semester project repository for semester project at SDU Sonderborg
-Created by Jacob Caspers 5. semester
+Repo owner is Jacob Caspers
 
-Repo holds C and C++ code for the semester project. 
+##  Project repository for semester project at SDU Sonderborg
+
+Repo holds C, C++ code and emb documentation for the semester project.  \
+All code uploaded should be able to build and compile in Atmel Studio runnign C. \
+(If not please mark folder) 
 
 ## Tasks in prioritized order
 
@@ -21,5 +24,10 @@ Repo holds C and C++ code for the semester project.
 	- Timing
 	- Handshake
 	- Protocols 
-4. Assembly
+4. Control
+	- PID program
+	- Motor program
+	- I/O setup
+	- ADC setup
+5. Assembly
 	- Assemble all subparts
