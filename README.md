@@ -1,2 +1,4 @@
 # BeachCleanerSDU
-Semester project at SDU Sønderborg, Beach cleaning robot.
+Semester project at SDU Sonderborg.
+
+This repo hold the students code for the robot.
