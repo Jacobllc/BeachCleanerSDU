@@ -41,6 +41,7 @@ Allocating common symbols
 Common symbol       size              file
 
 Gps_data            0xa2              GPS.o
+command             0x1               GPS.o
 
 Discarded input sections
 
@@ -49,22 +50,11 @@ Discarded input sections
  .text          0x00000000        0x0 GPS.o
  .data          0x00000000        0x0 GPS.o
  .bss           0x00000000        0x0 GPS.o
- .text.I2C_received
-                0x00000000        0x2 GPS.o
- .text.I2C_requested
-                0x00000000        0x2 GPS.o
- .text.setup    0x00000000       0x14 GPS.o
  .text          0x00000000        0x0 i2c_atmega_328p_slave.o
  .data          0x00000000        0x0 i2c_atmega_328p_slave.o
  .bss           0x00000000        0x0 i2c_atmega_328p_slave.o
- .text.I2C_setCallbacks
-                0x00000000       0x12 i2c_atmega_328p_slave.o
- .text.i2c_init
-                0x00000000       0x12 i2c_atmega_328p_slave.o
  .text.i2c_stop
                 0x00000000        0xe i2c_atmega_328p_slave.o
- .text.i2c_transmit_data
-                0x00000000        0x6 i2c_atmega_328p_slave.o
  .text          0x00000000        0x0 main.o
  .data          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
@@ -346,7 +336,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x340
+.text           0x00000000      0x408
  *(.vectors)
  .vectors       0x00000000       0x68 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -430,40 +420,76 @@ END GROUP
                 0x000000a2                __vector_20
                 0x000000a6                . = ALIGN (0x2)
  *(.text.*)
+ .text.I2C_received
+                0x000000a6        0x6 GPS.o
+                0x000000a6                I2C_received
  .text.GPS_init
-                0x000000a6       0x16 GPS.o
-                0x000000a6                GPS_init
+                0x000000ac       0x16 GPS.o
+                0x000000ac                GPS_init
  .text.stop_gps_sample
-                0x000000bc        0xa GPS.o
-                0x000000bc                stop_gps_sample
+                0x000000c2        0xa GPS.o
+                0x000000c2                stop_gps_sample
  .text.check_gps_data
-                0x000000c6       0x6e GPS.o
-                0x000000c6                check_gps_data
+                0x000000cc       0x6e GPS.o
+                0x000000cc                check_gps_data
  .text.printing_data
-                0x00000134       0xb4 GPS.o
-                0x00000134                printing_data
+                0x0000013a       0xb4 GPS.o
+                0x0000013a                printing_data
+ .text.I2C_slave_init
+                0x000001ee       0x14 GPS.o
+                0x000001ee                I2C_slave_init
+ .text.send_latitdue
+                0x00000202        0xa GPS.o
+                0x00000202                send_latitdue
+ .text.send_logtitude
+                0x0000020c        0xa GPS.o
+                0x0000020c                send_logtitude
+ .text.send_age_of_data
+                0x00000216        0xa GPS.o
+                0x00000216                send_age_of_data
+ .text.send_quality
+                0x00000220        0xa GPS.o
+                0x00000220                send_quality
+ .text.send_direction
+                0x0000022a        0xa GPS.o
+                0x0000022a                send_direction
+ .text.send_velocity
+                0x00000234        0xa GPS.o
+                0x00000234                send_velocity
+ .text.I2C_requested
+                0x0000023e       0x44 GPS.o
+                0x0000023e                I2C_requested
  .text.__vector_1
-                0x000001e8       0x28 GPS.o
-                0x000001e8                __vector_1
+                0x00000282       0x28 GPS.o
+                0x00000282                __vector_1
+ .text.I2C_setCallbacks
+                0x000002aa       0x12 i2c_atmega_328p_slave.o
+                0x000002aa                I2C_setCallbacks
+ .text.i2c_init
+                0x000002bc       0x12 i2c_atmega_328p_slave.o
+                0x000002bc                i2c_init
+ .text.i2c_transmit_data
+                0x000002ce        0x6 i2c_atmega_328p_slave.o
+                0x000002ce                i2c_transmit_data
  .text.__vector_24
-                0x00000210       0xa2 i2c_atmega_328p_slave.o
-                0x00000210                __vector_24
- .text.main     0x000002b2       0x1a main.o
-                0x000002b2                main
+                0x000002d4       0xa2 i2c_atmega_328p_slave.o
+                0x000002d4                __vector_24
+ .text.main     0x00000376       0x1e main.o
+                0x00000376                main
  .text.usart_send
-                0x000002cc       0x10 usart_IRS_RX.o
-                0x000002cc                usart_send
+                0x00000394       0x10 usart_IRS_RX.o
+                0x00000394                usart_send
  .text.usart_init
-                0x000002dc       0x18 usart_IRS_RX.o
-                0x000002dc                usart_init
+                0x000003a4       0x18 usart_IRS_RX.o
+                0x000003a4                usart_init
  .text.__vector_18
-                0x000002f4       0x48 usart_IRS_RX.o
-                0x000002f4                __vector_18
-                0x0000033c                . = ALIGN (0x2)
+                0x000003bc       0x48 usart_IRS_RX.o
+                0x000003bc                __vector_18
+                0x00000404                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000033c        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x0000033c                _exit
-                0x0000033c                exit
+ .fini9         0x00000404        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00000404                _exit
+                0x00000404                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -482,11 +508,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000033c        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000404        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000340                _etext = .
+                0x00000408                _etext = .
 
-.data           0x00800100        0x2 load address 0x00000340
+.data           0x00800100        0x2 load address 0x00000408
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -502,7 +528,7 @@ END GROUP
                 0x00800102                _edata = .
                 0x00800102                PROVIDE (__data_end, .)
 
-.bss            0x00800102       0xa9
+.bss            0x00800102       0xaa
                 0x00800102                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
@@ -517,17 +543,18 @@ END GROUP
  .bss.I2C_recieve
                 0x00800107        0x2 i2c_atmega_328p_slave.o
  *(COMMON)
- COMMON         0x00800109       0xa2 GPS.o
+ COMMON         0x00800109       0xa3 GPS.o
                 0x00800109                Gps_data
-                0x008001ab                PROVIDE (__bss_end, .)
-                0x00000340                __data_load_start = LOADADDR (.data)
-                0x00000342                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x008001ab                command
+                0x008001ac                PROVIDE (__bss_end, .)
+                0x00000408                __data_load_start = LOADADDR (.data)
+                0x0000040a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008001ab        0x0
+.noinit         0x008001ac        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x008001ab                _end = .
+                0x008001ac                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -595,62 +622,62 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xf0
+.debug_aranges  0x00000000      0x120
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x58 GPS.o
+                0x00000000       0x88 GPS.o
  .debug_aranges
-                0x00000058       0x40 i2c_atmega_328p_slave.o
+                0x00000088       0x40 i2c_atmega_328p_slave.o
  .debug_aranges
-                0x00000098       0x20 main.o
+                0x000000c8       0x20 main.o
  .debug_aranges
-                0x000000b8       0x38 usart_IRS_RX.o
+                0x000000e8       0x38 usart_IRS_RX.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xc14
+.debug_info     0x00000000      0xdc5
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_info    0x000005f4      0x2d6 GPS.o
- .debug_info    0x000008ca      0x177 i2c_atmega_328p_slave.o
- .debug_info    0x00000a41       0xd6 main.o
- .debug_info    0x00000b17       0xfd usart_IRS_RX.o
+ .debug_info    0x000005f4      0x44d GPS.o
+ .debug_info    0x00000a41      0x177 i2c_atmega_328p_slave.o
+ .debug_info    0x00000bb8       0xfe main.o
+ .debug_info    0x00000cb6      0x10f usart_IRS_RX.o
 
-.debug_abbrev   0x00000000      0x946
+.debug_abbrev   0x00000000      0x968
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2      0x18f GPS.o
  .debug_abbrev  0x00000731       0xd5 i2c_atmega_328p_slave.o
- .debug_abbrev  0x00000806       0x75 main.o
- .debug_abbrev  0x0000087b       0xcb usart_IRS_RX.o
+ .debug_abbrev  0x00000806       0x86 main.o
+ .debug_abbrev  0x0000088c       0xdc usart_IRS_RX.o
 
-.debug_line     0x00000000      0x703
+.debug_line     0x00000000      0x7ea
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x133 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_line    0x00000133      0x234 GPS.o
- .debug_line    0x00000367      0x182 i2c_atmega_328p_slave.o
- .debug_line    0x000004e9       0xe4 main.o
- .debug_line    0x000005cd      0x136 usart_IRS_RX.o
+ .debug_line    0x00000133      0x315 GPS.o
+ .debug_line    0x00000448      0x182 i2c_atmega_328p_slave.o
+ .debug_line    0x000005ca       0xea main.o
+ .debug_line    0x000006b4      0x136 usart_IRS_RX.o
 
-.debug_frame    0x00000000      0x24c
+.debug_frame    0x00000000      0x2ac
  *(.debug_frame)
- .debug_frame   0x00000000       0xe0 GPS.o
- .debug_frame   0x000000e0       0xac i2c_atmega_328p_slave.o
- .debug_frame   0x0000018c       0x24 main.o
- .debug_frame   0x000001b0       0x9c usart_IRS_RX.o
+ .debug_frame   0x00000000      0x140 GPS.o
+ .debug_frame   0x00000140       0xac i2c_atmega_328p_slave.o
+ .debug_frame   0x000001ec       0x24 main.o
+ .debug_frame   0x00000210       0x9c usart_IRS_RX.o
 
-.debug_str      0x00000000      0x525
+.debug_str      0x00000000      0x58e
  *(.debug_str)
  .debug_str     0x00000000      0x208 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x250 GPS.o
-                                0x28e (size before relaxing)
- .debug_str     0x00000458       0x83 i2c_atmega_328p_slave.o
+ .debug_str     0x00000208      0x2cb GPS.o
+                                0x309 (size before relaxing)
+ .debug_str     0x000004d3       0x71 i2c_atmega_328p_slave.o
                                 0x24c (size before relaxing)
- .debug_str     0x000004db       0x1c main.o
-                                0x1dd (size before relaxing)
- .debug_str     0x000004f7       0x2e usart_IRS_RX.o
-                                0x202 (size before relaxing)
+ .debug_str     0x00000544       0x1c main.o
+                                0x1f4 (size before relaxing)
+ .debug_str     0x00000560       0x2e usart_IRS_RX.o
+                                0x20a (size before relaxing)
 
 .debug_loc      0x00000000      0x2e8
  *(.debug_loc)
@@ -676,12 +703,12 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0xe8
+.debug_ranges   0x00000000      0x118
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x80 GPS.o
- .debug_ranges  0x00000080       0x30 i2c_atmega_328p_slave.o
- .debug_ranges  0x000000b0       0x10 main.o
- .debug_ranges  0x000000c0       0x28 usart_IRS_RX.o
+ .debug_ranges  0x00000000       0xb0 GPS.o
+ .debug_ranges  0x000000b0       0x30 i2c_atmega_328p_slave.o
+ .debug_ranges  0x000000e0       0x10 main.o
+ .debug_ranges  0x000000f0       0x28 usart_IRS_RX.o
 
 .debug_macro
  *(.debug_macro)

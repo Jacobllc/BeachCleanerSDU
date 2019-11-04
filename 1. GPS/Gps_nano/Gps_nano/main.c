@@ -19,7 +19,7 @@ int main(void)
 	DDRC = 0xF0; // I/O board PC0..3 as inputs, for buttons
 	PORTD = 0x00; // Enable internal pull at PC0...3 inputs
 	PORTC = 0x30; // Enable internal pull at PC0...3 3 inputs
-	
+	I2C_slave_init();
 	usart_init();
 	GPS_init();
 	
