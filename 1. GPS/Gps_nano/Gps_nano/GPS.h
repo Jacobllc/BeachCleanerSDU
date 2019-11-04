@@ -24,7 +24,7 @@ void stop_gps_sample(void);
 void printing_data(void);
 void I2C_received(uint8_t received_data);
 void I2C_requested();	
-void setup();
+void I2C_slave_init();
 
 
 

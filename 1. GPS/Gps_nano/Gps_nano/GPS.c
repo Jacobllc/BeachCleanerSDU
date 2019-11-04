@@ -106,7 +106,7 @@ void I2C_requested(void)												//if master request data from slave
 //	i2c_transmit_data(data);
 }
 
-void setup()
+void void I2C_slave_init()
 {
 	I2C_setCallbacks(I2C_received, I2C_requested);					// set received/requested callbacks
 	i2c_init(I2C_ADD);
