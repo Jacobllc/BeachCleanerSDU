@@ -11,8 +11,10 @@
 
 void init(struct DATA *GPS_Data)
 {
-	GPS_Data->LON = 0.0;
-	GPS_Data->LAT = 0.0;
+	GPS_Data->HIGH_LAT = 0;
+	GPS_Data->LOW_LAT  = 0;
+	GPS_Data->HIGH_LON = 0;
+	GPS_Data->LOW_LON = 0;
 	GPS_Data->ageOfCorrection = 0;
 	GPS_Data->quality=0;
 	GPS_Data->Speed=0;
@@ -39,7 +41,7 @@ uint8_t checksum(char* msg)
 			////////////MSB
 			i++;
 			nmea_sum = 16*(msg[i]-48);
-			
+				
 			////////////LSB
 			i++;
 			
@@ -52,10 +54,9 @@ uint8_t checksum(char* msg)
 			{
 				nmea_sum += 1*(msg[i]-55);
 			}
-			
 		}
 		
-		if(checksum==(nmea_sum-48))
+		if(checksum==(nmea_sum-(2*48)))
 		{
 			return 1;
 		}
@@ -86,14 +87,19 @@ uint8_t MessageType(char* msg){
 		}
 		char msg_gpgga[5] = "GPGGA";
 		char msg_gpvtg[5] = "GPVTG";
+		char msg_gngga[5] = "GNGGA";
 		
 		if(strncmp(msg_type, msg_gpgga, 5) == 0)
 		{
 			return GPGGA;
 		}
-		else if(strncmp(msg_type, msg_gpvtg, 5) == 0)
+		if(strncmp(msg_type, msg_gpvtg, 5) == 0)
 		{
 			return GPVTG;
+		}
+		if(strncmp(msg_type, msg_gngga, 5) == 0)
+		{
+			return GPGGA;
 		}
 	}
 	return 0; 
@@ -106,15 +112,18 @@ int GPS_Decode(char* msg, struct DATA *GPS_Data)
 	{
 		uint8_t type = MessageType(msg);
 		init(GPS_Data);
-
+		
 	switch(type)
 	{
 			case GPGGA:
 			{
 				uint8_t i=6;	//First comma after type
 				uint8_t CommaCounter=0;	//Comma counter
-				float Lat_divider = 1000;	//Digit number
-				float Lon_divider = 10000;
+				uint8_t DotCounter=0;
+				int High_Lat_divider = 1000;	//Digit number
+				int High_Lon_divider = 10000;
+				int Low_Lat_divider = 10000;
+				int Low_Lon_divider = 10000;
 				uint8_t age = 10;
 				
 				while(msg[i] != '*')
@@ -132,8 +141,21 @@ int GPS_Decode(char* msg, struct DATA *GPS_Data)
 						{
 							if((msg[i] != '.') && (msg[i] != ','))
 							{
-								GPS_Data->LAT += (msg[i] - 48.0) * Lat_divider;
-								Lat_divider /= 10;
+								if(DotCounter==0)
+								{
+									GPS_Data->HIGH_LAT += (msg[i] - 48) * High_Lat_divider;
+									High_Lat_divider /= 10;
+								}
+								if(DotCounter==1)
+								{
+									GPS_Data->LOW_LAT += (msg[i]-48) * (uint32_t)Low_Lat_divider;
+									Low_Lat_divider /= 10;		
+								}
+							}
+							
+							if(msg[i]=='.')
+							{
+								DotCounter++;
 							}
 							break;
 						}
@@ -151,8 +173,21 @@ int GPS_Decode(char* msg, struct DATA *GPS_Data)
 						{
 							if((msg[i] != '.') && (msg[i] != ','))
 							{
-								GPS_Data->LON += (msg[i] - 48.0) * Lon_divider;
-								Lon_divider /= 10;
+								if(DotCounter==1)								
+								{
+									GPS_Data->HIGH_LON += (msg[i] - 48.0) * High_Lon_divider;
+									High_Lon_divider /= 10;
+								}
+								if(DotCounter==2)
+								{
+									GPS_Data->LOW_LON += (msg[i] - 48) * (uint32_t)Low_Lon_divider;
+									Low_Lon_divider /= 10;
+								}
+							}
+							
+							if(msg[i]=='.')
+							{
+								DotCounter++;
 							}
 							break;
 						}

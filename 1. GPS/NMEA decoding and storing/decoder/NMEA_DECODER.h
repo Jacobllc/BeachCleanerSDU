@@ -11,13 +11,15 @@ typedef struct DATA
 {	
 	//From GGA		0		1			2		3		4	  5  6	7	  8	  9	 10	  11 12	13	14   15 
 	// 			   $--GGA, hhmmss.ss, llll.lll, a, yyyyy.yyy, a, x, uu, v.v, w.w, M, x.x, M, , zzzz* hh<CR><LF> 
-	float LAT;					  //, llll.lll, 
+	int HIGH_LAT;					  //, llll.lll, 
+	uint32_t LOW_LAT;
 	char LATdir;				  //		  , a, 
-	float LON;					  //			 , yyyyy.yyy, 
+	int HIGH_LON;					  //			 , yyyyy.yyy, 
+	uint32_t LOW_LON;
 	char LONdir;				  //						, a, 
 	uint8_t quality;			  //						   , x, 
 	uint8_t ageOfCorrection;	  //											   , x.x, 
-
+	
 /*
 	GPS Quality indicator :
 	0 : Fix not valid
