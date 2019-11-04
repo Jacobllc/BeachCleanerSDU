@@ -96,22 +96,83 @@ print_flag=1;
 
 void I2C_received(uint8_t received_data)							//isr on receiving a byte on i2c
 {
-
-										
+	command = received_data;								
 }
 
 void I2C_requested(void)												//if master request data from slave
 {
-	
-//	i2c_transmit_data(data);
+	 switch(command)
+	 {
+		 
+		 case 0:
+		 {
+		 send_latitdue();
+		 break;
+		 }
+		 
+		 case 1:
+		 {
+		 send_logtitude();
+		 break;
+		 }
+		  
+		 case 2:
+		 {
+		 send_quality();
+		 break;
+		 }
+		    
+		 case 3:
+		 {
+		 send_age_of_data();
+		 break;
+		 }
+		 
+		 case 4:
+		 {
+		 send_direction();
+		 break;
+		 }
+		  
+		 case 5:
+		 {
+		 send_velocity();
+		 break;
+		 }
+	 }
 }
 
-void void I2C_slave_init()
+void I2C_slave_init()
 {
 	I2C_setCallbacks(I2C_received, I2C_requested);					// set received/requested callbacks
 	i2c_init(I2C_ADD);
 }
 
+
+void send_latitdue(void)
+{
+	i2c_transmit_data(10);
+}
+void send_logtitude(void)
+{
+	i2c_transmit_data(20);
+}
+void send_age_of_data(void)
+{
+	i2c_transmit_data(30);
+}
+void send_quality(void)
+{
+	i2c_transmit_data(40);
+}
+void send_direction(void)
+{
+	i2c_transmit_data(50);
+}
+void send_velocity(void)
+{
+	i2c_transmit_data(60);
+}
 
 
 ISR(INT0_vect)

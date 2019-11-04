@@ -13,7 +13,6 @@
 #include <stdint.h>
 
 
-
 // Function prototypes
 
 void i2c_init(uint8_t address);					// Enable I2C.
