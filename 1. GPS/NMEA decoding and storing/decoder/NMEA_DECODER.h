@@ -12,10 +12,8 @@ typedef struct DATA
 	//From GGA		0		1			2		3		4	  5  6	7	  8	  9	 10	  11 12	13	14   15 
 	// 			   $--GGA, hhmmss.ss, llll.lll, a, yyyyy.yyy, a, x, uu, v.v, w.w, M, x.x, M, , zzzz* hh<CR><LF> 
 	float LAT;					  //, llll.lll, 
-	int LAT_int;				  //       
 	char LATdir;				  //		  , a, 
 	float LON;					  //			 , yyyyy.yyy, 
-	int LON_int;				  //
 	char LONdir;				  //						, a, 
 	uint8_t quality;			  //						   , x, 
 	uint8_t ageOfCorrection;	  //											   , x.x, 
