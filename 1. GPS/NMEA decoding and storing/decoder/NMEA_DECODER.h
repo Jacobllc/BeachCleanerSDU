@@ -11,12 +11,19 @@ typedef struct DATA
 {	
 	//From GGA		0		1			2		3		4	  5  6	7	  8	  9	 10	  11 12	13	14   15 
 	// 			   $--GGA, hhmmss.ss, llll.lll, a, yyyyy.yyy, a, x, uu, v.v, w.w, M, x.x, M, , zzzz* hh<CR><LF> 
-	int HIGH_LAT;					  //, llll.lll, 
-	uint32_t LOW_LAT;
+	uint8_t LAT_Degree;					  //, llll.lll, 
+	uint8_t LAT_Min;
+	uint32_t LAT;
+	float LAT_Float;
 	char LATdir;				  //		  , a, 
-	int HIGH_LON;					  //			 , yyyyy.yyy, 
-	uint32_t LOW_LON;
-	char LONdir;				  //						, a, 
+	
+	uint8_t LON_Degree;					  //			 , yyyyy.yyy, 
+	uint8_t LON_Min;
+	uint32_t LON;
+	float LON_Float;
+	uint32_t LON_FINAL;
+	char LONdir;				  //						, a,
+	 
 	uint8_t quality;			  //						   , x, 
 	uint8_t ageOfCorrection;	  //											   , x.x, 
 	
