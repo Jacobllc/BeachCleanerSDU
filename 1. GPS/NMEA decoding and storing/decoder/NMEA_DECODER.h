@@ -15,6 +15,7 @@ typedef struct DATA
 	uint8_t LAT_Min;
 	uint32_t LAT;
 	float LAT_Float;
+	uint32_t LAT_FINAL;
 	char LATdir;				  //		  , a, 
 	
 	uint8_t LON_Degree;					  //			 , yyyyy.yyy, 
@@ -40,13 +41,13 @@ typedef struct DATA
 	//				$--VTG,x.x,T,y.y,M,u.u,N,v.v,K,m*hh<CR><LF>
 	float TrueDir;	//	  ,x.x, 
 	float Speed;	//						,v.v,
+	float dist_wp;
+	float bearing_wp;
 	
 }DATA;
 
 void init(struct DATA *GPS_Data);
-
 int GPS_Decode(char* msg, struct DATA *GPS_Data);
-
 uint8_t MessageType(char* msg);
 
 #endif /* NMEA_DECODER_H_ */

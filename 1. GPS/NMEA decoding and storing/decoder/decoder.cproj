@@ -30,15 +30,15 @@
     <EraseKey />
     <AsfFrameworkConfig>
       <framework-data>
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.34.1" />
-  </dependencies>
-</framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.34.1" />
+        </dependencies>
+      </framework-data>
     </AsfFrameworkConfig>
     <atStartFilePath>.atmelstart\atmel_start_config.atstart</atStartFilePath>
     <GpdscFilePath>.atmelstart\AtmelStart.gpdsc</GpdscFilePath>
@@ -243,6 +243,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="examples\src\usart_basic_example.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gps_func.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gps_func.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\atmel_start_pins.h">
