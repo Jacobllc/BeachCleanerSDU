@@ -23,6 +23,8 @@ void init(struct DATA *GPS_Data)
 	GPS_Data->quality=0;
 	GPS_Data->Speed=0;
 	GPS_Data->TrueDir=0;
+	GPS_Data->dist_wp=0;
+	GPS_Data->bearing_wp=0;
 }
 
 uint8_t checksum(char* msg)
@@ -113,13 +115,14 @@ void convert(struct DATA *GPS_Data)
 {
 	GPS_Data->LAT_Float = GPS_Data->LAT_Degree + (GPS_Data->LAT_Min/60.00000) + (GPS_Data->LAT/6000000.0);
 	GPS_Data->LON_Float = GPS_Data->LON_Degree + (GPS_Data->LON_Min/60.00000) + (GPS_Data->LON/6000000.0);
-	GPS_Data->LON_FINAL = (GPS_Data->LON_Degree + (GPS_Data->LON_Min/60.00000) + (GPS_Data->LON/6000000.0))*1000000;
+	GPS_Data->LON_FINAL =  ((GPS_Data->LON_Min/60.00000) + (GPS_Data->LON/6000000.0))  *1000000;
+	GPS_Data->LAT_FINAL = ((GPS_Data->LAT_Min/60.00000) + (GPS_Data->LAT/6000000.0)) *1000000;
 }
 
 int GPS_Decode(char* msg, struct DATA *GPS_Data)
 {
 	///////////////////Checksum////////////////////////
-	if(checksum(msg))
+	if(!checksum(msg))  //! to disable during testing 
 	{
 		uint8_t type = MessageType(msg);
 		init(GPS_Data);
