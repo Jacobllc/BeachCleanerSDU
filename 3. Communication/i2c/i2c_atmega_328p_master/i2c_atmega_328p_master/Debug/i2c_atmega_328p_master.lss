@@ -13,21 +13,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000011e4  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 000000e8  00000000  00000000  00001224  2**0
+  5 .debug_aranges 00000108  00000000  00000000  00001224  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00001067  00000000  00000000  0000130c  2**0
+  6 .debug_info   000010bf  00000000  00000000  0000132c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000a9f  00000000  00000000  00002373  2**0
+  7 .debug_abbrev 00000ab7  00000000  00000000  000023eb  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000008e5  00000000  00000000  00002e12  2**0
+  8 .debug_line   00000929  00000000  00000000  00002ea2  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000238  00000000  00000000  000036f8  2**2
+  9 .debug_frame  00000278  00000000  00000000  000037cc  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000058f  00000000  00000000  00003930  2**0
+ 10 .debug_str    000005d7  00000000  00000000  00003a44  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000007bc  00000000  00000000  00003ebf  2**0
+ 11 .debug_loc    000007bc  00000000  00000000  0000401b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000c0  00000000  00000000  0000467b  2**0
+ 12 .debug_ranges 000000e0  00000000  00000000  000047d7  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -360,7 +360,7 @@ ISR (TIMER0_COMPA_vect) // timer0 overflow interrupt
  248:	e9 cf       	rjmp	.-46     	; 0x21c <main+0x1e>
 
 0000024a <get_data>:
-
+#include "master.h"
 
 
 

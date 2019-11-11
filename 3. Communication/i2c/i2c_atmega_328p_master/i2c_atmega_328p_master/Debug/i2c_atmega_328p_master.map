@@ -1,7 +1,7 @@
 Archive member included to satisfy reference by file (symbol)
 
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                              C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o (exit)
+                              C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o (exit)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
                               i2c_atmega_328p_master.o (__do_copy_data)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
@@ -48,8 +48,8 @@ __iob               0x6               c:/program files (x86)/atmel/studio/7.0/to
 
 Discarded input sections
 
- .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .text          0x00000000        0x0 i2c_atmega_328p_master.o
  .data          0x00000000        0x0 i2c_atmega_328p_master.o
  .bss           0x00000000        0x0 i2c_atmega_328p_master.o
@@ -70,6 +70,14 @@ Discarded input sections
  .bss           0x00000000        0x0 master.o
  .text.get_data_bytes
                 0x00000000      0x1a4 master.o
+ .text.update_gps_data
+                0x00000000        0x2 master.o
+ .text.update_sensor_data
+                0x00000000        0x2 master.o
+ .text.update_battery_data
+                0x00000000        0x2 master.o
+ .text.update_motor_data
+                0x00000000        0x2 master.o
  .text          0x00000000        0x0 usart.o
  .data          0x00000000        0x0 usart.o
  .bss           0x00000000        0x0 usart.o
@@ -210,7 +218,7 @@ user_signatures  0x00850000         0x00000400         rw !x
 Linker script and memory map
 
 Address of section .data set to 0x800100
-LOAD C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+LOAD C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
 LOAD i2c_atmega_328p_master.o
 LOAD main.o
 LOAD master.o
@@ -222,7 +230,7 @@ START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a
-LOAD C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5\libatmega328p.a
+LOAD C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5\libatmega328p.a
 END GROUP
                 0x00020000                __TEXT_REGION_LENGTH__ = DEFINED (__TEXT_REGION_LENGTH__)?__TEXT_REGION_LENGTH__:0x20000
                 0x0000ffa0                __DATA_REGION_LENGTH__ = DEFINED (__DATA_REGION_LENGTH__)?__DATA_REGION_LENGTH__:0xffa0
@@ -324,7 +332,7 @@ END GROUP
 
 .text           0x00000000      0xfe0
  *(.vectors)
- .vectors       0x00000000       0x68 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .vectors       0x00000000       0x68 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
                 0x00000000                __vectors
  *(.vectors)
@@ -353,13 +361,13 @@ END GROUP
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x00000074        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .init0         0x00000074        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000074                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x00000074        0xc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .init2         0x00000074        0xc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
  *(.init2)
  *(.init3)
  *(.init3)
@@ -378,10 +386,10 @@ END GROUP
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x000000a6        0x8 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .init9         0x000000a6        0x8 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
  *(.init9)
  *(.text)
- .text          0x000000ae        0x4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .text          0x000000ae        0x4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x000000ae                __vector_22
                 0x000000ae                __vector_1
                 0x000000ae                __vector_24
@@ -533,14 +541,13 @@ END GROUP
  .data.uart_output
                 0x0080010e        0xe usart.o
                 0x0080010e                uart_output
- *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
                 0x0080011c       0x12 main.o
  .rodata.str1.1
                 0x0080012e       0xe4 master.o
- *(.gnu.linkonce.r*)
+ *(.gnu.linkonce.d*)
                 0x00800212                . = ALIGN (0x2)
                 0x00800212                _edata = .
                 0x00800212                PROVIDE (__data_end, .)
@@ -627,7 +634,7 @@ END GROUP
 .note.gnu.avr.deviceinfo
                 0x00000000       0x40
  .note.gnu.avr.deviceinfo
-                0x00000000       0x40 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+                0x00000000       0x40 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
 
 .note.gnu.build-id
  *(.note.gnu.build-id)
@@ -644,62 +651,62 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xe8
+.debug_aranges  0x00000000      0x108
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x68 i2c_atmega_328p_master.o
  .debug_aranges
                 0x00000068       0x20 main.o
  .debug_aranges
-                0x00000088       0x28 master.o
+                0x00000088       0x48 master.o
  .debug_aranges
-                0x000000b0       0x38 usart.o
+                0x000000d0       0x38 usart.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x1067
+.debug_info     0x00000000     0x10bf
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0x5f4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .debug_info    0x00000000      0x5f4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_info    0x000005f4      0x308 i2c_atmega_328p_master.o
  .debug_info    0x000008fc      0x171 main.o
- .debug_info    0x00000a6d      0x3bf master.o
- .debug_info    0x00000e2c      0x23b usart.o
+ .debug_info    0x00000a6d      0x417 master.o
+ .debug_info    0x00000e84      0x23b usart.o
 
-.debug_abbrev   0x00000000      0xa9f
+.debug_abbrev   0x00000000      0xab7
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x5a2 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .debug_abbrev  0x00000000      0x5a2 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2      0x1af i2c_atmega_328p_master.o
  .debug_abbrev  0x00000751       0xd1 main.o
- .debug_abbrev  0x00000822      0x117 master.o
- .debug_abbrev  0x00000939      0x166 usart.o
+ .debug_abbrev  0x00000822      0x12f master.o
+ .debug_abbrev  0x00000951      0x166 usart.o
 
-.debug_line     0x00000000      0x8e5
+.debug_line     0x00000000      0x929
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x133 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .debug_line    0x00000000      0x133 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_line    0x00000133      0x313 i2c_atmega_328p_master.o
  .debug_line    0x00000446      0x12f main.o
- .debug_line    0x00000575      0x22f master.o
- .debug_line    0x000007a4      0x141 usart.o
+ .debug_line    0x00000575      0x273 master.o
+ .debug_line    0x000007e8      0x141 usart.o
 
-.debug_frame    0x00000000      0x238
+.debug_frame    0x00000000      0x278
  *(.debug_frame)
  .debug_frame   0x00000000       0xf8 i2c_atmega_328p_master.o
  .debug_frame   0x000000f8       0x34 main.o
- .debug_frame   0x0000012c       0xb0 master.o
- .debug_frame   0x000001dc       0x5c usart.o
+ .debug_frame   0x0000012c       0xf0 master.o
+ .debug_frame   0x0000021c       0x5c usart.o
 
-.debug_str      0x00000000      0x58f
+.debug_str      0x00000000      0x5d7
  *(.debug_str)
- .debug_str     0x00000000      0x208 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x288 i2c_atmega_328p_master.o
-                                0x2c6 (size before relaxing)
- .debug_str     0x00000490       0x4a main.o
-                                0x241 (size before relaxing)
- .debug_str     0x000004da       0x3e master.o
-                                0x285 (size before relaxing)
- .debug_str     0x00000518       0x77 usart.o
-                                0x261 (size before relaxing)
+ .debug_str     0x00000000      0x208 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .debug_str     0x00000208      0x287 i2c_atmega_328p_master.o
+                                0x2c5 (size before relaxing)
+ .debug_str     0x0000048f       0x4a main.o
+                                0x240 (size before relaxing)
+ .debug_str     0x000004d9       0x87 master.o
+                                0x2cd (size before relaxing)
+ .debug_str     0x00000560       0x77 usart.o
+                                0x260 (size before relaxing)
 
 .debug_loc      0x00000000      0x7bc
  *(.debug_loc)
@@ -726,12 +733,12 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0xc0
+.debug_ranges   0x00000000       0xe0
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x58 i2c_atmega_328p_master.o
  .debug_ranges  0x00000058       0x10 main.o
- .debug_ranges  0x00000068       0x30 master.o
- .debug_ranges  0x00000098       0x28 usart.o
+ .debug_ranges  0x00000068       0x50 master.o
+ .debug_ranges  0x000000b8       0x28 usart.o
 
 .debug_macro
  *(.debug_macro)
