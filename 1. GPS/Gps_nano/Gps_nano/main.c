@@ -13,6 +13,8 @@
 #include "i2c_atmega_328p_slave.h"
 #include <util/delay.h>
 
+
+
 int main(void)
 {
 	DDRD = 0x00; // I/O PD0-PD7 set as input
@@ -23,9 +25,10 @@ int main(void)
 	usart_init();
 	GPS_init();
 	
-
 	while(1)
 	{		
+		
+		
 		printing_data();
 	}
 }

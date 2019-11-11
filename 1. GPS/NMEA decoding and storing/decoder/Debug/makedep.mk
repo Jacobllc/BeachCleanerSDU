@@ -8,6 +8,8 @@ driver_isr.c
 
 examples\src\usart_basic_example.c
 
+gps_func.c
+
 main.c
 
 NMEA_DECODER.c
