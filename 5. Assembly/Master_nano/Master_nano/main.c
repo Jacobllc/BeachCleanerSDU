@@ -12,6 +12,7 @@
  #include "usart.h"
  int data=0;
  int data_received =0;
+ int status = 100;
  uint8_t byte=1;
  int main(void)
  {
@@ -23,8 +24,30 @@
 	
 	 while (1)
 	 {
-	 
+	
+
+		 printf("input a number\n");
+		 scanf("%d",&data);
+		 printf("Thanks\n");
+		 status=i2c_start(0x10<<1 | I2C_WRITE);		//starts i2c comm here in writing mode
+		 printf("start i2c %d\n", status);
+		 status = 100;
+		 status=i2c_write(data);						//send pressed key char
+		  printf("write i2c %d\n", status);
+		 i2c_stop();							//stop i2c here
+			
+		 i2c_start(0x10<<1 | I2C_READ);			//here we start i2c in read mode where we request a byte
+		 data_received=i2c_read_ack();			//read the byte
+		 i2c_read_nack();						// read the neg ack
+		 i2c_stop();
 		
+		printf("Received %d \n", data_received);
+
+	 }
+ }
+
+
+		/*
 		
 		printf("input an number\n");
 		scanf("%d",&data);
@@ -43,21 +66,4 @@
 		}
 	 }
 	 
- }
-
-
-
-
-/*
-		 printf("input a number\n");
-		 scanf("%d",&data);
-		 printf("Thanks\n");
-		 i2c_start(0x10<<1 | I2C_WRITE);		//starts i2c comm here in writing mode
-		 i2c_write(data);						//send pressed key char
-		 i2c_stop();							//stop i2c here
-			
-		 i2c_start(0x10<<1 | I2C_READ);			//here we start i2c in read mode where we request a byte
-		 data_received=i2c_read_ack();			//read the byte
-		 i2c_read_nack();						// read the neg ack
-		 i2c_stop();
-		*/
+ }*/

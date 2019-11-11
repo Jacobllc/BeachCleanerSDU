@@ -5,15 +5,21 @@
  *  Author: Hörður Hermannsson
  */ 
 
-
-#include <avr/io.h>
-#include <util/twi.h>
-
-#include "i2c_atmega_328p_master.h"
 #define F_CPU 16000000UL
-#define F_SCL 100000UL // SCL frequency
+#define F_SCL 400000UL // SCL frequency
 #define Prescaler 1
 #define TWBR_val ((((F_CPU / F_SCL) / Prescaler) - 16 ) / 2)
+
+#include <util/delay.h>
+#include <avr/io.h>
+#include <util/twi.h>
+#include "i2c_atmega_328p_master.h"
+#include <stdio.h>
+#include <avr/interrupt.h>
+
+volatile int counter=-500;
+volatile int status=0;
+volatile int startup=0;
 
 void i2c_init(void)
 {
@@ -73,36 +79,6 @@ uint8_t i2c_read_nack(void)
 
 }
 
-uint8_t i2c_transmit(uint8_t address, uint8_t* data, uint16_t length)
-{
-	if (i2c_start(address<<1 | I2C_WRITE)) return 1;
-	
-	for (uint16_t i = 0; i < length; i++)
-	{
-		if (i2c_write(data[i])) return 1;
-	}
-	
-	i2c_stop();
-	
-	return 0;
-}
-
-uint8_t i2c_receive(uint8_t address, uint8_t* data, uint16_t length)
-{
-	if (i2c_start(address<<1 | I2C_READ)) return 1;
-	
-	for (uint16_t i = 0; i < (length-1); i++)
-	{
-		data[i] = i2c_read_ack();
-	}
-	data[(length-1)] = i2c_read_nack();
-	
-	i2c_stop();
-	
-	return 0;
-}
-
-
 void i2c_stop(void)
 {
 	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO);			// transmit STOP condition
@@ -111,7 +87,6 @@ void i2c_stop(void)
 
 void i2c_transmit_bytes(int data, uint8_t address)
 {
-	
 	
 	if(data>=256)
 	{
@@ -127,10 +102,82 @@ void i2c_transmit_bytes(int data, uint8_t address)
 	
 	else
 	{
-		
 		i2c_start(address<<1 | I2C_WRITE);		//starts i2c comm here in writing mode
 		i2c_write(data);						//send pressed key char
 		i2c_stop();								//stop i2c here
-	 
+	}
+}
+
+void scan_i2c(void)
+{
+	int addresses_min = 0x00;
+	int addresses_max = 0xF7;
+	uint8_t logic;
+	
+	for (int i=addresses_min; i<=addresses_max; i++)
+	{	
+		if(!(logic=i2c_start(i<<1 | I2C_WRITE)))
+		{
+			printf("%X is on the bus \n",i);
+		}
+	}
+}
+
+
+void i2c_sync(void)
+{
+	while(!(i2c_start(slave_address<<1 | I2C_WRITE)))
+	{
+	printf("Disable \n");	
+	}
+		
+	// TIMER 0 for interrupt frequency 100.16025641025641 Hz:
+	
+	TCCR0A |= (1 << WGM01);
+	// Set the Timer Mode to CTC
+	OCR0A = 155;
+	// Set the value that you want to count to 256
+	TIMSK0 |= (1 << OCIE0A);
+	//Set the ISR COMPA vect
+	TCCR0B |= (1 << CS02) | (0 << CS01) | (1 << CS00);
+	// set prescaler to 64 and start the timer
+	sei(); // turn on interrupts					// turn on interrupts
+}
+
+
+
+
+ISR (TIMER0_COMPA_vect) // timer0 overflow interrupt
+{	
+	counter++;
+	
+	switch(startup)
+	{
+		case 0:
+		{
+			if (counter==50)
+			{
+				PORTD ^=(1<<PIND2); 
+				printf("trigger\n");
+				status=1;
+				startup=1;
+				counter=0;
+				
+			}
+			break;
+		}
+		
+		case 1:
+		{
+			if (counter==100)	
+			{	
+				PORTD ^=(1<<PIND2); 
+				printf("trigger\n");
+
+				status=1;
+				counter=0;
+			}
+			break;	
+		}		
 	}
 }

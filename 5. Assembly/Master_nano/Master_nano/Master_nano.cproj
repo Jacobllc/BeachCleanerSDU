@@ -120,7 +120,19 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="i2c_atmega_328p_master.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="i2c_atmega_328p_master.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="usart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="usart.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

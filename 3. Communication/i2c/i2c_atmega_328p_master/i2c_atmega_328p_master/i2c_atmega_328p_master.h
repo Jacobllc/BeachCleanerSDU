@@ -12,7 +12,7 @@
 
 #define I2C_READ 0x01
 #define I2C_WRITE 0x00
-
+#define slave_address 0x40
 
 // Functions prototypes 
 
@@ -27,6 +27,8 @@ uint8_t i2c_writeReg(uint8_t devaddr, uint8_t regaddr, uint8_t* data, uint16_t l
 uint8_t i2c_readReg(uint8_t devaddr, uint8_t regaddr, uint8_t* data, uint16_t length);
 void i2c_stop(void);
 void i2c_transmit_2bytes(int data, uint8_t address);
+void scan_i2c(void);
+void i2c_sync(void);
 
 
 #endif /* I2C_ATMEGA_328P_MASTER_H_ */
