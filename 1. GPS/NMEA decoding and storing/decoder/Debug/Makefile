@@ -53,6 +53,7 @@ C_SRCS +=  \
 ../atmel_start.c \
 ../driver_isr.c \
 ../examples/src/usart_basic_example.c \
+../gps_func.c \
 ../main.c \
 ../NMEA_DECODER.c \
 ../src/driver_init.c \
@@ -70,6 +71,7 @@ OBJS +=  \
 atmel_start.o \
 driver_isr.o \
 examples/src/usart_basic_example.o \
+gps_func.o \
 main.o \
 NMEA_DECODER.o \
 src/driver_init.o \
@@ -80,6 +82,7 @@ OBJS_AS_ARGS +=  \
 atmel_start.o \
 driver_isr.o \
 examples/src/usart_basic_example.o \
+gps_func.o \
 main.o \
 NMEA_DECODER.o \
 src/driver_init.o \
@@ -90,6 +93,7 @@ C_DEPS +=  \
 atmel_start.d \
 driver_isr.d \
 examples/src/usart_basic_example.d \
+gps_func.d \
 main.d \
 NMEA_DECODER.d \
 src/driver_init.d \
@@ -100,6 +104,7 @@ C_DEPS_AS_ARGS +=  \
 atmel_start.d \
 driver_isr.d \
 examples/src/usart_basic_example.d \
+gps_func.d \
 main.d \
 NMEA_DECODER.d \
 src/driver_init.d \
@@ -135,6 +140,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 examples/src/usart_basic_example.o: ../examples/src/usart_basic_example.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"../Config" -I"../examples/include" -I"../include" -I"../utils" -I"../utils/assembler" -I".." -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./gps_func.o: .././gps_func.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"../Config" -I"../examples/include" -I"../include" -I"../utils" -I"../utils/assembler" -I".." -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
