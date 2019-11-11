@@ -11,7 +11,7 @@
  #include "i2c_atmega_328p_master.h"  
  #include "usart.h"
  #include "master.h"
- int data=0;
+ unsigned int data=0;
  uint8_t byte=1;
  int main(void)
  {
@@ -30,13 +30,8 @@
 		printf("input a number\n");
 		scanf("%d",&data);
 		
-		//data=get_data(data, GPS_address);
-		
-		
-		data=get_data_bytes(data, 2, GPS_address);
-		
-		printf("Reveived value %d\n", data);
-		
+		data=get_data(data, GPS_address);
+	
 	
 	 }
 	 

@@ -8,19 +8,19 @@
 
 #ifndef I2C_ATMEGA_328P_SLAVE_H_
 #define I2C_ATMEGA_328P_SLAVE_H_
-
+#define I2C_ADDR 0x40												
 #include<avr/interrupt.h>
 #include <stdint.h>
 
-volatile uint8_t data;
-volatile uint8_t data2;
-
 // Function prototypes
+volatile int data;
+
 
 void i2c_init(uint8_t address);					// Enable I2C.
 void i2c_disable(void);							// Disable I2C.	
-void i2c_transmit_data(int data);			// Write data into buffer.
-
-
+void i2c_transmit_data(uint8_t data);			// Write data into buffer.
+void I2C_recieve(uint8_t received_data);
+void I2C_data_ACK_request(void);		
+void I2C_data_NACK_request(void);												
 
 #endif /* I2C_ATMEGA_328P_SLAVE_H_ */

@@ -10,8 +10,12 @@
 #include "i2c_atmega_328p_master.h"
 #include <stdio.h>
 #include <avr/interrupt.h>
-
 #include "master.h"
+
+
+
+
+
 
 int get_data( uint8_t opcode, uint8_t address)
  {
@@ -81,13 +85,11 @@ int get_data( uint8_t opcode, uint8_t address)
 	 
  }
 
-
-
 int get_data_bytes( uint8_t opcode, uint8_t bytes, uint8_t address)
 {
 	
 	int info;
-	int result=0;
+    int result=0;
 	uint8_t data_received[bytes];
 	
 	info = i2c_start(address<<1 | I2C_WRITE);		//starts i2c comm here in writing mode
@@ -129,7 +131,7 @@ int get_data_bytes( uint8_t opcode, uint8_t bytes, uint8_t address)
 		for (int i=0; i<(bytes-1); i++)
 		{
 			data_received[i]=i2c_read_ack();
-			
+			printf("data %d \n",data_received[i]);
 			if (data_received[i]== -1)
 			{
 				printf("The receiver did not send the data \n");
@@ -137,28 +139,25 @@ int get_data_bytes( uint8_t opcode, uint8_t bytes, uint8_t address)
 			}
 		}
 		
-		
-		data_received[bytes]=i2c_read_nack();	//read the byte
-		
-		if (data_received[bytes]== -1)
+		data_received[bytes-1]=i2c_read_nack();	//read the byte
+		printf("data %d \n",data_received[bytes-1]);
+		if (data_received[bytes-1]== -1)
 		{
 			printf("The receiver did not send the data \n");
 			return -1;
 		}
 		
-		for (int i=0; i<bytes; i++)
+		result=data_received[0];
+		for (int i=1; i<bytes; i++)
 		{
-			result=result+(data_received[i] << 8*i);
-			printf("data %d \n",data_received[i]);
+			result=result+(data_received[i] << 8*i);	
 		}
 		
+		i2c_stop();		
+		printf("stopping i2c \n ");
 		return result;
-		
+			
 	}
-	
-	i2c_stop();				//stop i2c here
-	printf("stopping i2c \n ");
-	
 	
 	
 	

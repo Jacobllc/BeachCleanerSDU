@@ -9,18 +9,28 @@
 #include <avr/interrupt.h>
 #include <stdio.h>
 #include "i2c_atmega_328p_slave.h"
+#include "Gps_send.h"
+
 
 void I2C_recieve(uint8_t received_data)							//isr on receiving a byte on i2c
  {
-	 data = received_data;
-	 data2=data+2;													//received data
-	 printf("From master: %d\n",data);											
+	set_opcode(received_data);							
  }		
  
-void I2C_data_request()												//if master request data from slave
+ 
+void I2C_data_ACK_request(void)												//if master request data from slave
 {
-	i2c_transmit_data(data2);
+	i2c_service();
+	i2c_transmit_data(data);
 }
+
+ 
+ void I2C_data_NACK_request(void)												//if master request data from slave
+ {
+	 i2c_service();
+	 i2c_transmit_data(data);
+ }
+
 
 void i2c_init(uint8_t address)
 {
@@ -38,7 +48,7 @@ void i2c_disable(void)
 		sei();
 }
 
-void i2c_transmit_data(int data)
+void i2c_transmit_data(uint8_t data)
 {		
 	TWDR = data;
 }
@@ -51,21 +61,20 @@ ISR(TWI_vect)
 		printf("TW_SR_DATA_ACK\n");
 		// received data from master, call the receive callback
 		I2C_recieve(TWDR);
-		
 		TWCR = (1<<TWIE) | (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
 		break;
 		
 		case TW_ST_SLA_ACK:
-		// master is requesting data, call the request callback
-		printf("TW_ST_SLA_ACK\n");
-		I2C_data_request();
+		// master is requesting data using NACK,master expects only one additional byte. call the request callback
+		I2C_data_NACK_request();
+		printf("NACK\n");
 		TWCR = (1<<TWIE) | (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
 		break;
 		
 		case TW_ST_DATA_ACK:
-		// master is requesting data, call the request callback
-		printf("TW_ST_DATA_ACK\n");
-		I2C_data_request();
+		// master is requesting data using ACK, master expects multiple bytes. call the request callback
+		I2C_data_ACK_request();
+		printf("ACK\n");
 		TWCR = (1<<TWIE) | (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
 		break;
 		

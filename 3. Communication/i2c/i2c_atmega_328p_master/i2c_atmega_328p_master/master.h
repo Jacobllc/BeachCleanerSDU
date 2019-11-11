@@ -20,9 +20,6 @@
 #define Distance 0x03
 
 
-
-
-
 int get_data( uint8_t opcode, uint8_t address);
 int get_data_bytes( uint8_t opcode, uint8_t bytes, uint8_t address);
 
