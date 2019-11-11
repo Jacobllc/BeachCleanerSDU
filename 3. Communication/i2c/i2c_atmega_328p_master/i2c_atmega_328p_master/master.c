@@ -14,9 +14,6 @@
 
 
 
-
-
-
 int get_data( uint8_t opcode, uint8_t address)
  {
 	int info;
@@ -173,7 +170,26 @@ int get_data_bytes( uint8_t opcode, uint8_t bytes, uint8_t address)
 	
 	
 }
+
+
+void update_gps_data (void)
+{
 	
+	
+		
+}
+void update_sensor_data (void)
+{
+	
+}
+void update_battery_data (void)
+{
+	
+}
+void update_motor_data (void)
+{
+	
+}
 	
 	
 
