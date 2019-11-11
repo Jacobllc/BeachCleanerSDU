@@ -1,44 +1,38 @@
  #define F_CPU 16000000UL											//Freq of microcontroller
  #include <avr/io.h>
  #include <stdio.h>
+ #include <util\delay.h>
  #include "usart.h"
  #include "i2c_atmega_328p_slave.h"									//here we used i2c slave lib
- #define I2C_ADDR 0x10												//make slave address as 0x10
-
- volatile uint8_t data;
- volatile uint8_t data2;												//declare volatile variable to use in isr routines
-
- void I2C_received(uint8_t received_data)							//isr on receiving a byte on i2c
- {
-
- data = received_data;
- data2=2+data;													//received data
- printf("%d\n",data);											//printing to lcd
- }
-
- void I2C_requested()												//if master request data from slave
- {
+ #define I2C_ADDR 0x40												//make slave address as 0x10
  
- i2c_transmit_data(data2);
- }
 
- void i2c_init()
- {
+int main()
+{
 	 
- I2C_setCallbacks(I2C_received, I2C_requested);					// set received/requested callbacks
- i2c_init(I2C_ADDR);
- }
 
- int main()
- {
-	 
- i2c_init();														//in this we only print the received data and echo it back when data is requested from master
- uart_init();
- io_redirect();
- 
- 
- 
- while(1);
- }
+uart_init();
+io_redirect();	
+i2c_disable();
+
+_delay_ms(5000);
+
+	while(1)
+	{
+		
+		i2c_init(I2C_ADDR);
+
+		_delay_ms(960);
+		
+		//i2c_init(I2C_ADDR);
+		i2c_disable();
+		
+		_delay_ms(40);
+		
+		
+		data2++;
+		//printf("Internal: %d\n", data2);		
+	}
+}
 
 
