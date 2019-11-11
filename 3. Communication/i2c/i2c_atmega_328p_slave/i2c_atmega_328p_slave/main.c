@@ -3,7 +3,7 @@
  #include <stdio.h>
  #include "usart.h"
  #include "i2c_atmega_328p_slave.h"									//here we used i2c slave lib
- #define I2C_ADDR 0x10												//make slave address as 0x10
+ #define I2C_ADDR 0x40												//make slave address as 0x10
 
  volatile uint8_t data;
  volatile uint8_t data2;												//declare volatile variable to use in isr routines
@@ -22,7 +22,7 @@
  i2c_transmit_data(data2);
  }
 
- void i2c_init()
+ void i2cslave_init()
  {
 	 
  I2C_setCallbacks(I2C_received, I2C_requested);					// set received/requested callbacks
@@ -32,7 +32,7 @@
  int main()
  {
 	 
- i2c_init();														//in this we only print the received data and echo it back when data is requested from master
+ i2cslave_init();														//in this we only print the received data and echo it back when data is requested from master
  uart_init();
  io_redirect();
  

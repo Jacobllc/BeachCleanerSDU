@@ -39,7 +39,7 @@ Discarded input sections
  .text          0x00000000        0x0 i2c_atmega_328p_slave.o
  .data          0x00000000        0x0 i2c_atmega_328p_slave.o
  .bss           0x00000000        0x0 i2c_atmega_328p_slave.o
- .text.i2c_stop
+ .text.i2c_disable
                 0x00000000        0xe i2c_atmega_328p_slave.o
  .text          0x00000000        0x0 main.o
  .data          0x00000000        0x0 main.o
@@ -375,8 +375,9 @@ END GROUP
  .text.I2C_requested
                 0x0000019e        0xc main.o
                 0x0000019e                I2C_requested
- .text.setup    0x000001aa       0x14 main.o
-                0x000001aa                setup
+ .text.i2cslave_init
+                0x000001aa       0x14 main.o
+                0x000001aa                i2cslave_init
  .text.main     0x000001be        0xe main.o
                 0x000001be                main
  .text.uart_putchar
@@ -568,12 +569,12 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xb75
+.debug_info     0x00000000      0xb76
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_info    0x000005f4      0x177 i2c_atmega_328p_slave.o
- .debug_info    0x0000076b      0x1cf main.o
- .debug_info    0x0000093a      0x23b usart.o
+ .debug_info    0x0000076b      0x1d0 main.o
+ .debug_info    0x0000093b      0x23b usart.o
 
 .debug_abbrev   0x00000000      0x8df
  *(.debug_abbrev)
@@ -595,14 +596,14 @@ END GROUP
  .debug_frame   0x000000ac       0x64 main.o
  .debug_frame   0x00000110       0x5c usart.o
 
-.debug_str      0x00000000      0x4f3
+.debug_str      0x00000000      0x5b1
  *(.debug_str)
  .debug_str     0x00000000      0x208 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x211 i2c_atmega_328p_slave.o
-                                0x24f (size before relaxing)
- .debug_str     0x00000419       0x63 main.o
-                                0x241 (size before relaxing)
- .debug_str     0x0000047c       0x77 usart.o
+ .debug_str     0x00000208      0x239 i2c_atmega_328p_slave.o
+                                0x277 (size before relaxing)
+ .debug_str     0x00000441       0x6b main.o
+                                0x26e (size before relaxing)
+ .debug_str     0x000004ac      0x105 usart.o
                                 0x23a (size before relaxing)
 
 .debug_loc      0x00000000      0x20a

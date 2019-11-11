@@ -6,7 +6,7 @@
  */ 
 
 #define F_CPU 16000000UL
-#define F_SCL 400000UL // SCL frequency
+#define F_SCL 100000UL // SCL frequency
 #define Prescaler 1
 #define TWBR_val ((((F_CPU / F_SCL) / Prescaler) - 16 ) / 2)
 
@@ -16,22 +16,29 @@
 #include "i2c_atmega_328p_master.h"
 #include <stdio.h>
 #include <avr/interrupt.h>
+volatile int counter=0;
+volatile int flag=0;
 
-volatile int counter=-500;
-volatile int status=0;
-volatile int startup=0;
 
 void i2c_init(void)
 {
 	TWBR = (uint8_t)TWBR_val;
 }
 
-uint8_t i2c_start(uint8_t address)
+int i2c_start(uint8_t address)
 {
 
-	TWCR = 0;																	// reset TWI control register
+	TWCR = 0;										
+	TCNT0 = 0, counter = 0, flag = 0;																			// reset TWI control register
 	TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN);									// transmit START condition
-	while( !(TWCR & (1<<TWINT)) );												// wait for end of transmission
+	while( !(TWCR & (1<<TWINT)) )
+	{
+			if (flag==1)
+			{
+				flag = 0;
+				return -1;
+			}
+	}												// wait for end of transmission
 	
 	if((TWSR & 0xF8) != TW_START)
 	{ return 1; }																// check if the start condition was successfully transmitted
@@ -60,13 +67,24 @@ uint8_t i2c_write(uint8_t data)
 	return 0;
 }
 
-uint8_t i2c_read_ack(void)
-{
-	
+int i2c_read_ack(void)
+{	
+	TCNT0 = 0, counter = 0, flag = 0;
 	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWEA);			// start TWI module and acknowledge data after reception
-	while( !(TWCR & (1<<TWINT)) );						// wait for end of transmission
-	return TWDR;										// return received data from TWDR
-
+	while(!(TWCR & (1<<TWINT)))
+	{
+		if (flag==1)
+		{
+			flag = 0;
+			return -1;
+		}
+	}
+														// wait for end of transmission
+	
+	PORTD^=(1<<PORTD2);
+	return (int)TWDR;								// return received data from TWDR
+	
+	
 }
 
 uint8_t i2c_read_nack(void)
@@ -124,24 +142,18 @@ void scan_i2c(void)
 }
 
 
-void i2c_sync(void)
+void i2c_timer0_init(void)
 {
-	while(!(i2c_start(slave_address<<1 | I2C_WRITE)))
-	{
-	printf("Disable \n");	
-	}
-		
-	// TIMER 0 for interrupt frequency 100.16025641025641 Hz:
-	
 	TCCR0A |= (1 << WGM01);
 	// Set the Timer Mode to CTC
-	OCR0A = 155;
+	OCR0A = 0xF9;
+	TCNT0 = 0;
 	// Set the value that you want to count to 256
 	TIMSK0 |= (1 << OCIE0A);
 	//Set the ISR COMPA vect
-	TCCR0B |= (1 << CS02) | (0 << CS01) | (1 << CS00);
+	TCCR0B |= (1 << CS01) | (1 << CS00);
 	// set prescaler to 64 and start the timer
-	sei(); // turn on interrupts					// turn on interrupts
+	sei(); // turn on interrupts
 }
 
 
@@ -151,33 +163,20 @@ ISR (TIMER0_COMPA_vect) // timer0 overflow interrupt
 {	
 	counter++;
 	
-	switch(startup)
+	if (counter==20)
 	{
-		case 0:
-		{
-			if (counter==50)
-			{
-				PORTD ^=(1<<PIND2); 
-				printf("trigger\n");
-				status=1;
-				startup=1;
-				counter=0;
-				
-			}
-			break;
-		}
+		flag=1;
+		counter=0;
 		
-		case 1:
-		{
-			if (counter==100)	
-			{	
-				PORTD ^=(1<<PIND2); 
-				printf("trigger\n");
-
-				status=1;
-				counter=0;
-			}
-			break;	
-		}		
+	}
+	
+	if (flag==0)
+	{PORTD=(1<<PORTD3);
+	}
+	
+	else
+	{
+		
+		PORTD=(0<<PORTD3);
 	}
 }

@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 000000b0  00000000  00000000  00000944  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000b75  00000000  00000000  000009f4  2**0
+  6 .debug_info   00000b76  00000000  00000000  000009f4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000008df  00000000  00000000  00001569  2**0
+  7 .debug_abbrev 000008df  00000000  00000000  0000156a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000052e  00000000  00000000  00001e48  2**0
+  8 .debug_line   0000052e  00000000  00000000  00001e49  2**0
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  0000016c  00000000  00000000  00002378  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000004f3  00000000  00000000  000024e4  2**0
+ 10 .debug_str    000005b1  00000000  00000000  000024e4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000020a  00000000  00000000  000029d7  2**0
+ 11 .debug_loc    0000020a  00000000  00000000  00002a95  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000080  00000000  00000000  00002be1  2**0
+ 12 .debug_ranges 00000080  00000000  00000000  00002c9f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -133,9 +133,8 @@ void i2c_transmit_data(int data)
   ce:	08 95       	ret
 
 000000d0 <__vector_24>:
-
-// TWI Interrupt!! 
-
+}
+ 
 
 ISR(TWI_vect)
 {
@@ -283,10 +282,10 @@ ISR(TWI_vect)
  1a4:	0e 94 65 00 	call	0xca	; 0xca <i2c_transmit_data>
  1a8:	08 95       	ret
 
-000001aa <setup>:
+000001aa <i2cslave_init>:
  }
 
- void setup()
+ void i2cslave_init()
  {
 	 
  I2C_setCallbacks(I2C_received, I2C_requested);					// set received/requested callbacks
@@ -296,7 +295,7 @@ ISR(TWI_vect)
  1b0:	90 e0       	ldi	r25, 0x00	; 0
  1b2:	0e 94 53 00 	call	0xa6	; 0xa6 <I2C_setCallbacks>
  i2c_init(I2C_ADDR);
- 1b6:	80 e1       	ldi	r24, 0x10	; 16
+ 1b6:	80 e4       	ldi	r24, 0x40	; 64
  1b8:	0e 94 5c 00 	call	0xb8	; 0xb8 <i2c_init>
  1bc:	08 95       	ret
 
@@ -305,8 +304,9 @@ ISR(TWI_vect)
 
  int main()
  {
- setup();														//in this we only print the received data and echo it back when data is requested from master
- 1be:	0e 94 d5 00 	call	0x1aa	; 0x1aa <setup>
+	 
+ i2cslave_init();														//in this we only print the received data and echo it back when data is requested from master
+ 1be:	0e 94 d5 00 	call	0x1aa	; 0x1aa <i2cslave_init>
  uart_init();
  1c2:	0e 94 fe 00 	call	0x1fc	; 0x1fc <uart_init>
  io_redirect();
