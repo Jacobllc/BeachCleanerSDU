@@ -13,10 +13,10 @@
 void init_io(void);
 void init_timers(void);
 
-float getdist1(void);
-float getdist2(void);
-float getdist3(void);
-float getdist4(void);
+int getdist1(void);
+int getdist2(void);
+int getdist3(void);
+int getdist4(void);
 void min_dist(int dis);
 
 
