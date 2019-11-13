@@ -5,27 +5,40 @@
  *  Author: Hörður Hermannsson
  */ 
 
-
-#include <avr/io.h>
-#include <util/twi.h>
-
-#include "i2c_atmega_328p_master.h"
 #define F_CPU 16000000UL
 #define F_SCL 100000UL // SCL frequency
 #define Prescaler 1
 #define TWBR_val ((((F_CPU / F_SCL) / Prescaler) - 16 ) / 2)
+
+#include <util/delay.h>
+#include <avr/io.h>
+#include <util/twi.h>
+#include "i2c_atmega_328p_master.h"
+#include <stdio.h>
+#include <avr/interrupt.h>
+volatile int counter=0;
+volatile int flag=0;
+
 
 void i2c_init(void)
 {
 	TWBR = (uint8_t)TWBR_val;
 }
 
-uint8_t i2c_start(uint8_t address)
+int i2c_start(uint8_t address)
 {
 
-	TWCR = 0;																	// reset TWI control register
+	TWCR = 0;										
+	TCNT0 = 0, counter = 0, flag = 0;																			// reset TWI control register
 	TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN);									// transmit START condition
-	while( !(TWCR & (1<<TWINT)) );												// wait for end of transmission
+	while( !(TWCR & (1<<TWINT)) )
+	{
+			if (flag==1)
+			{
+				flag = 0;
+				return -1;
+			}
+	}												// wait for end of transmission
 	
 	if((TWSR & 0xF8) != TW_START)
 	{ return 1; }																// check if the start condition was successfully transmitted
@@ -54,13 +67,24 @@ uint8_t i2c_write(uint8_t data)
 	return 0;
 }
 
-uint8_t i2c_read_ack(void)
-{
-	
+int i2c_read_ack(void)
+{	
+	TCNT0 = 0, counter = 0, flag = 0;
 	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWEA);			// start TWI module and acknowledge data after reception
-	while( !(TWCR & (1<<TWINT)) );						// wait for end of transmission
-	return TWDR;										// return received data from TWDR
-
+	while(!(TWCR & (1<<TWINT)))
+	{
+		if (flag==1)
+		{
+			flag = 0;
+			return -1;
+		}
+	}
+														// wait for end of transmission
+	
+	PORTD^=(1<<PORTD2);
+	return (int)TWDR;								// return received data from TWDR
+	
+	
 }
 
 uint8_t i2c_read_nack(void)
@@ -73,36 +97,6 @@ uint8_t i2c_read_nack(void)
 
 }
 
-uint8_t i2c_transmit(uint8_t address, uint8_t* data, uint16_t length)
-{
-	if (i2c_start(address<<1 | I2C_WRITE)) return 1;
-	
-	for (uint16_t i = 0; i < length; i++)
-	{
-		if (i2c_write(data[i])) return 1;
-	}
-	
-	i2c_stop();
-	
-	return 0;
-}
-
-uint8_t i2c_receive(uint8_t address, uint8_t* data, uint16_t length)
-{
-	if (i2c_start(address<<1 | I2C_READ)) return 1;
-	
-	for (uint16_t i = 0; i < (length-1); i++)
-	{
-		data[i] = i2c_read_ack();
-	}
-	data[(length-1)] = i2c_read_nack();
-	
-	i2c_stop();
-	
-	return 0;
-}
-
-
 void i2c_stop(void)
 {
 	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO);			// transmit STOP condition
@@ -111,7 +105,6 @@ void i2c_stop(void)
 
 void i2c_transmit_bytes(int data, uint8_t address)
 {
-	
 	
 	if(data>=256)
 	{
@@ -127,10 +120,63 @@ void i2c_transmit_bytes(int data, uint8_t address)
 	
 	else
 	{
-		
 		i2c_start(address<<1 | I2C_WRITE);		//starts i2c comm here in writing mode
 		i2c_write(data);						//send pressed key char
 		i2c_stop();								//stop i2c here
-	 
+	}
+}
+
+void scan_i2c(void)
+{
+	int addresses_min = 0x00;
+	int addresses_max = 0xF7;
+	uint8_t logic;
+	
+	for (int i=addresses_min; i<=addresses_max; i++)
+	{	
+		if(!(logic=i2c_start(i<<1 | I2C_WRITE)))
+		{
+			printf("%X is on the bus \n",i);
+		}
+	}
+}
+
+
+void i2c_timer0_init(void)
+{
+	TCCR0A |= (1 << WGM01);
+	// Set the Timer Mode to CTC
+	OCR0A = 0xF9;
+	TCNT0 = 0;
+	// Set the value that you want to count to 256
+	TIMSK0 |= (1 << OCIE0A);
+	//Set the ISR COMPA vect
+	TCCR0B |= (1 << CS01) | (1 << CS00);
+	// set prescaler to 64 and start the timer
+	sei(); // turn on interrupts
+}
+
+
+
+
+ISR (TIMER0_COMPA_vect) // timer0 overflow interrupt
+{	
+	counter++;
+	
+	if (counter==20)
+	{
+		flag=1;
+		counter=0;
+		
+	}
+	
+	if (flag==0)
+	{PORTD=(1<<PORTD3);
+	}
+	
+	else
+	{
+		
+		PORTD=(0<<PORTD3);
 	}
 }

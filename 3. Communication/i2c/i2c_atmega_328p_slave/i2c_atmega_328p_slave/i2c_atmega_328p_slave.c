@@ -11,23 +11,26 @@
 #include "i2c_atmega_328p_slave.h"
 #include "Gps_send.h"
 
+volatile int data;
+
 
 void I2C_recieve(uint8_t received_data)							//isr on receiving a byte on i2c
  {
-	set_opcode(received_data);							
+	set_opcode(received_data);
+	data=received_data;							
  }		
  
  
 void I2C_data_ACK_request(void)												//if master request data from slave
 {
-	i2c_service();
+	//i2c_service();
 	i2c_transmit_data(data);
 }
 
  
  void I2C_data_NACK_request(void)												//if master request data from slave
  {
-	 i2c_service();
+	 //i2c_service();
 	 i2c_transmit_data(data);
  }
 
@@ -52,6 +55,13 @@ void i2c_transmit_data(uint8_t data)
 {		
 	TWDR = data;
 }
+
+void set_data(uint8_t value)
+{
+	data = value;
+}
+
+
  
 ISR(TWI_vect)
 {

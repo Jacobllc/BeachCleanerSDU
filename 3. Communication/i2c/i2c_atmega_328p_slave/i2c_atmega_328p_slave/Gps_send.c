@@ -44,13 +44,13 @@ void i2c_service(void)
 
 void Gps_send_status(void)
 {
-		data=10;
+	set_data(10);
 }
 void Gps_send_Direction(void)
 {
-		data=20;
+	set_data(20);
 }
 void Gps_send_Distance(void)
 {
-		data=30;
+	set_data(30);
 }

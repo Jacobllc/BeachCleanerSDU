@@ -23,14 +23,18 @@
 	 uart_init();
 	 io_redirect();			
 	 
+
+		
+	
 	
 	 while (1)
 	 {	
 		
+			
 		printf("input a number\n");
 		scanf("%d",&data);
 		
-		data=get_data(data, GPS_address);
+		data=get_data_long(data, GPS_address);
 	
 	
 	 }
