@@ -12,6 +12,8 @@
  #include "usart.h"
  #include "master.h"
  unsigned int data=0;
+ char a=255;
+ char b=0;
  uint8_t byte=1;
  int main(void)
  {
@@ -22,10 +24,7 @@
 	 i2c_timer0_init();
 	 uart_init();
 	 io_redirect();			
-	 
 
-		
-	
 	
 	 while (1)
 	 {	

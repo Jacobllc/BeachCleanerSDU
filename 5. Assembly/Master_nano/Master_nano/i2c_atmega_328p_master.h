@@ -28,6 +28,10 @@ void i2c_stop(void);
 void i2c_transmit_2bytes(int data, uint8_t address);
 void scan_i2c(void);
 void i2c_timer0_init(void);
+int get_data_8bit( uint8_t opcode, uint8_t address);
+int get_data_int( uint8_t opcode, uint8_t address);
+long get_data_long( uint8_t opcode, uint8_t address);
+
 
 
 #endif /* I2C_ATMEGA_328P_MASTER_H_ */
