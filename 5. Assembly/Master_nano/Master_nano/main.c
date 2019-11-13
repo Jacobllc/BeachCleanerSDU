@@ -14,7 +14,7 @@
  unsigned int data=0;
  char a=255;
  char b=0;
- uint8_t byte=1;
+ 
  int main(void)
  {
 	 DDRD = 0xFF; // I/O board PD4..7 as outputs, for LEDs
@@ -32,8 +32,11 @@
 			
 		printf("input a number\n");
 		scanf("%d",&data);
+		printf("thanks \n");
 		
-		data=get_data_long(data, GPS_address);
+		char a=update_gps_data();
+		printf("result = %d \n",a);
+		//data=get_data_long(data, GPS_address);
 	
 	
 	 }

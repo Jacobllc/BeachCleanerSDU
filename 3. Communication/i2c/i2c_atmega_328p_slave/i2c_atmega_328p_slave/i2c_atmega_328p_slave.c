@@ -23,15 +23,18 @@ void I2C_recieve(uint8_t received_data)							//isr on receiving a byte on i2c
  
 void I2C_data_ACK_request(void)												//if master request data from slave
 {
-	//i2c_service();
+	i2c_service();
 	i2c_transmit_data(data);
+	bytes++;
+	printf("bytes value %d\n",bytes);
 }
 
  
  void I2C_data_NACK_request(void)												//if master request data from slave
  {
-	 //i2c_service();
+	 i2c_service();
 	 i2c_transmit_data(data);
+	 bytes=0;
  }
 
 
@@ -68,7 +71,6 @@ ISR(TWI_vect)
 	switch(TW_STATUS)
 	{
 		case TW_SR_DATA_ACK:
-		printf("TW_SR_DATA_ACK\n");
 		// received data from master, call the receive callback
 		I2C_recieve(TWDR);
 		TWCR = (1<<TWIE) | (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
