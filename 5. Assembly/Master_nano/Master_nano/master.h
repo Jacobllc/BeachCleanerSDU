@@ -15,36 +15,17 @@
 
 
 /////////////////// GPS Commands/////////////////////////////////
-#define status 0x01
-#define Direction 0x02
-#define Distance 0x03
+#define data_check 0x01
+#define Device_status 0x02
+#define Direction 0x03
+#define Distance 0x04
 
 /////////////////// GPS Commands/////////////////////////////////
-#define status 0x01
-#define Direction 0x02
-#define Distance 0x03
 
-/////////////////// GPS Commands/////////////////////////////////
-#define status 0x01
-#define Direction 0x02
-#define Distance 0x03
-
-/////////////////// GPS Commands/////////////////////////////////
-#define status 0x01
-#define Direction 0x02
-#define Distance 0x03
-
-/////////////////// GPS Commands/////////////////////////////////
-#define status 0x01
-#define Direction 0x02
-#define Distance 0x03
 
 /////////////////////////////////////////////////////////////////
 
-
-int get_data_8bit( uint8_t opcode, uint8_t address);
-int get_data_int( uint8_t opcode, uint8_t address);
-long get_data_long( uint8_t opcode, uint8_t address);
+int cal_checksum(int value, char length);
 
 
 void update_gps_data (void);
