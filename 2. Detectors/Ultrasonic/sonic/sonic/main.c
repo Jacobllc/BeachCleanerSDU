@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "usart.h"
 #include "set_up.h"
+
 int obs;
 void init_io(){
 	//Sensor1
@@ -120,7 +121,54 @@ void min_dist(int dis)
 		obs = 1;
 	}
 }
+int distance (void)
+{
+	int n = 30;		// Samples per average
+	int s = 4;		// Number of sensors
+	int i, zone=0;
+	
+	volatile int distance_1_array[n], distance_2_array[n], distance_3_array[n], distance_4_array[n];
+	volatile int av_distance_array[s];
+	volatile int sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0;
+	
+	for (i=0; i<n; i++)
+	{
+		// Fill arrays with distances
+		distance_1_array[i] = getdist1();
+		/*distance_2_array[i] = getdist2();
+		distance_3_array[i] = getdist3();
+		distance_4_array[i] = getdist4();
+		*/
+		// Build sum of distances
+		sum1 = sum1 + distance_1_array[i];
+		/*sum2 = sum2 + distance_2_array[i];
+		sum3 = sum3 + distance_3_array[i];
+		sum4 = sum4 + distance_4_array[i];
+		*/
+	}
 
+	// Calculate average
+	av_distance_array[1] = sum1/n;
+	/*av_distance_array[2] = sum2/n;
+	av_distance_array[3] = sum3/n;
+	av_distance_array[4] = sum4/n;
+	*/
+	av_distance_array[2] = 45;
+	av_distance_array[3] = 45;
+	av_distance_array[4] = 45;
+	
+	// Determine zone
+	if		((av_distance_array[1] > 41) & (av_distance_array[2] > 41) & (av_distance_array[3] > 41) & (av_distance_array[4] > 41)) zone=3;	
+	if		((av_distance_array[1] < 40) | (av_distance_array[2] < 40) | (av_distance_array[3] < 40) | (av_distance_array[4] < 40)) zone=2;
+	if		((av_distance_array[1] < 30) | (av_distance_array[2] < 30) | (av_distance_array[3] < 30) | (av_distance_array[4] < 30)) zone=1;
+
+	
+	// return zone;
+	printf("Sum: %d \n", sum1);
+	printf("Distance: %d \n", av_distance_array[1]);
+	printf("Zone: %d \n", zone);
+
+}
 
 
 int main(void)
@@ -130,34 +178,12 @@ int main(void)
     io_redirect();
 	init_timers();
 	
-	int sample=10;
-	int sum = 0;
-	int n = 30;
-	int i;
-	volatile int distance_1_array[n], distance_2_array[n], distance_3_array[n], distance_4_array[n];
+	
 	
     while (1) 
     {
-		volatile int av_distance1 = 0, av_distance2 = 0, av_distance3 = 0, av_distance4 = 0;
-		// Fill arrays with n distance samples (100ms)
 		
-		for (i=0; i<n; i++) 
-		{
-				// Fill array with distances
-			//distance_1_array[i] = getdist1();
-			distance_2_array[i] = getdist2();
-		
-			// Build sum of distances 
-			
-			//av_distance1 = av_distance1 + distance_1_array[i];
-			av_distance2 = av_distance2 + distance_2_array[i];
-		}
-
-		// Calculate average 
-		//av_distance1=av_distance1/n;
-		av_distance2 = av_distance2/n;
-		//printf("Average: %d \n", av_distance2);
-		
+		distance();
 		if (TCNT1 == 5900) // toggle pin every time you read the four sensors. XOR the pin to see it
 		{
 			PORTD ^=(1<<PORTD2);
