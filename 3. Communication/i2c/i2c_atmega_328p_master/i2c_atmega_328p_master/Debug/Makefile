@@ -39,6 +39,7 @@ SUBDIRS :=
 C_SRCS +=  \
 ../i2c_atmega_328p_master.c \
 ../main.c \
+../master.c \
 ../usart.c
 
 
@@ -51,21 +52,25 @@ ASM_SRCS +=
 OBJS +=  \
 i2c_atmega_328p_master.o \
 main.o \
+master.o \
 usart.o
 
 OBJS_AS_ARGS +=  \
 i2c_atmega_328p_master.o \
 main.o \
+master.o \
 usart.o
 
 C_DEPS +=  \
 i2c_atmega_328p_master.d \
 main.d \
+master.d \
 usart.d
 
 C_DEPS_AS_ARGS +=  \
 i2c_atmega_328p_master.d \
 main.d \
+master.d \
 usart.d
 
 OUTPUT_FILE_PATH +=i2c_atmega_328p_master.elf
@@ -82,6 +87,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 
@@ -121,7 +128,7 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU Linker : 5.4.0
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="i2c_atmega_328p_master.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.132\gcc\dev\atmega328p"  
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="i2c_atmega_328p_master.map" -Wl,-u,vfprintf -Wl,--start-group -Wl,-lm -Wl,-lprintf_flt  -Wl,--end-group -Wl,--gc-sections -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.132\gcc\dev\atmega328p"  
 	@echo Finished building target: $@
 	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "i2c_atmega_328p_master.elf" "i2c_atmega_328p_master.hex"
 	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "i2c_atmega_328p_master.elf" "i2c_atmega_328p_master.eep" || exit 0
