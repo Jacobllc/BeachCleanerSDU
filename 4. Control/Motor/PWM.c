@@ -14,11 +14,20 @@
  #define F_CPU 16000000UL
  #include <stdio.h>
  #include <avr/io.h>
+ #include <util/delay.h>
  #include "PWM.h"
  #include "MACROS.h"
  
- #define MPWM_MAX 255
- #define MPWM_MIN 128
+ #define MPWM_MAX 100
+ #define MPWM_MIN 20
+ double M1_DutyCycle_n;
+ double M2_DutyCycle_n;
+ double M1_DutyCycle = MPWM_MIN;
+ double M2_DutyCycle = MPWM_MIN;
+ char kp_1 = 0.4;
+ char kp_2 = 0.4;
+ 
+ char sortState = 0;
 
 //////////////////////         Timer0 Setup 
 void T0_init(void){
@@ -26,20 +35,20 @@ void T0_init(void){
 		TCCR0A |= (1 << COM0A1);			    // set OC0A to non-inverting mode
 		TCCR0A |= (1 << COM0B1);			    // set OC0B to non-inverting mode
 		TIMSK0 |= (1 << TOIE0) ;		
-		//OCR0A duty cycle OCR0A PIN6
-		//OCR0B duty cycle OCR0B PIN5
+		OCR0A = 254; //duty cycle OCR0A PIN6
+		OCR0B = 254;//duty cycle OCR0B PIN5
 		TCCR0B |= (1 << CS00) | ( 1 << CS02 );				   // set pre scaler to 1024 12.5 kHz
 }
 
 
 //////////////////////         Timer1 Setup 
 void T1_init(void){
-		TCCR1A |= (1<<WGM12) | (1<<WGM11) | (1<<WGM10);   // set Timer1 to 16bit fast PWM mode
+		TCCR1A |= (1<<WGM12) | (1<<WGM11) | (1<<WGM10);   // set Timer1 to 16bit fast PWM mode TCCR1A max value 1023
 		TCCR1A |= (1 << COM1A1);
 		TCCR1A |= (1 << COM1B1);
 		TIMSK1 |= (1 << TOIE1 );
-		//OCR1A  duty cycle OCR0A PIN13
-		//OCR1B  duty cycle OCR0B PIN14
+		OCR1A = 254;  //duty cycle OCR0A PIN13
+		//OCR1B = 254;  //duty cycle OCR0B PIN14
 		TCCR1B |= (1<<CS11 ) | (1 << CS10);				  // set pre-scaler to 64 FREQ - 14.7kHz
 
 	
@@ -52,24 +61,135 @@ void T2_init(void){
 		TCCR2A |= (1 << COM2A1);			    // set OC2A to non-inverting mode
 		TCCR2A |= (1 << COM2B1);			    // set OC2B to non-inverting mode
 		TIMSK2 |= (1 << TOIE2 );
-		//OCR2A =  duty cycle OCR0A PIN12
+		//OCR2A =  255;
 		//OCR2B = 255;
 		TCCR2B |= (1 << CS22) | (1 << CS21) | (1 << CS20);					// set pre-scaler to 1024 - 12.5 kHz
 }
 			
-			
+
+void TimersInit(void){
+		T0_init();     //
+		T1_init();	   //
+		T2_init();     //
+	
+}
+		
 //////////////////////         Motor functions
 
-void SetDrive(uint8_t M1_DutyCycle, uint8_t M2_DutyCycle , uint8_t M_Direc){
-		
-		double M1DC = M1_DutyCycle;
-		double M2DC = M2_DutyCycle;
-		
-		OCR1A =  (M1DC/100)*1023;
-		OCR1B =  (M2DC/100)*1023;
-		printf("PWM value set \nM1 = %d \nM2 = %d \n ", OCR1A, OCR1B );
+void StopDrive(void){
+	
+	M1_DutyCycle = 0;
+	M2_DutyCycle = 0;
+	sortState = 0;
+	Sorting(sortState);
+	SetDrive(M1_DutyCycle, M2_DutyCycle);
+	
+	
+}
 
 
+
+void Sorting(char sortState){
+	
+	if(sortState == 1){
+		OCR0A = 255;
+		OCR0B = 255;
+		OCR1A = 255;	
+	}
+	
+	if(sortState == 0){
+		OCR0A = 0;
+		OCR0B = 0;
+		OCR1A = 0;
+		
+	}
+	
+}
+
+void CalculatePwm(uint8_t error, uint8_t Zone){
+	
+	switch(Zone){
+		case 1:
+		M1_DutyCycle_n = 100 - kp_1 * error;
+		M2_DutyCycle_n = 100 - kp_2 * error;
+		break;
+		
+		case 2:
+		M1_DutyCycle_n = 70 - kp_1 * error;
+		M2_DutyCycle_n = 70 - kp_2 * error;
+		break;
+		
+		case 3:
+		StopDrive();
+		break;
+	}
+}
+
+void StartDrive(void){
+	
+	PinState(pd7, high);			// H-Bridge Enable pin Motor 1
+	PinState(pb0, high);		// H-Bridge Enable pin Motor 2
+	
+	while(M1_DutyCycle < 100 && M2_DutyCycle < 100){
+		M1_DutyCycle += 10;
+		M2_DutyCycle += 10;
+		OCR2A =  (M1_DutyCycle/100)*254;			// DubyCycle Motor 1
+		OCR2B =  (M2_DutyCycle/100)*254;			// DutyCycle Motor 2
+		_delay_us(1);
+	
+	}
+}
+
+
+void SetDrive(double M1_DutyCycle, double M2_DutyCycle){
+		
+			if(M1_DutyCycle < MPWM_MIN)
+			{
+				M1_DutyCycle = MPWM_MIN;
+			}
+			
+			if (M2_DutyCycle < MPWM_MIN)
+			{
+				M2_DutyCycle = MPWM_MIN;
+			}
+			
+						if(M1_DutyCycle < 0)
+						{
+							M1_DutyCycle = 0;
+						}
+						
+						if (M2_DutyCycle < 0)
+						{
+							M2_DutyCycle = 0;
+						}
+						
+			if((error > 90) || (error < -90)){
+//								   Turning ... 				
+							if(error > 90){
+								PinState(pd7, low);							 // H-Bridge Enable pin Motor 1
+								PinState(pb0, low);							 // H-Bridge Enable pin Motor 2
+								OCR2A =  (M1_DutyCycle/100)*254;			// DubyCycle Motor 1
+								OCR2B =  (M2_DutyCycle/100)*254;			// DutyCycle Motor 2
+							}
+//									Turning ... 
+									if(error < -90){
+									PinState(pd7, high);							 // H-Bridge Enable pin Motor 1
+									PinState(pb0, high);							 // H-Bridge Enable pin Motor 2
+									OCR2A =  (M1_DutyCycle/100)*254;			// DubyCycle Motor 1
+									OCR2B =  (M2_DutyCycle/100)*254;			// DutyCycle Motor 2
+														}
+
+			}
+			
+
+//									Turning ...
+								PinState(pd7, low);							 // H-Bridge Enable pin Motor 1
+								PinState(pb0, low);							 // H-Bridge Enable pin Motor 2
+								OCR2A =  (M1_DutyCycle/100)*254;			// DubyCycle Motor 1
+								OCR2B =  (M2_DutyCycle/100)*254;			// DutyCycle Motor 2								
+
+
+		/*									L298 H-Bridge 
 		//  Break
 		if(M_Direc == 0b0000){
 		PinState(pd4, low);  // L298 in1
@@ -115,7 +235,7 @@ void SetDrive(uint8_t M1_DutyCycle, uint8_t M2_DutyCycle , uint8_t M_Direc){
 		PinState(pb4, low);  // L298 in4
 				printf("Direc Set \n");
 		}
-		
+		*/
 
 			}
 

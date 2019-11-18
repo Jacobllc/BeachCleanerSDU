@@ -9,19 +9,35 @@
 #ifndef PWM_INIT_H_
 #define PWM_INIT_H_
 
+//								i2C value
+uint8_t error;
+char sortState;
+uint8_t Zone;
 
-uint8_t	M_Direc;
-uint8_t M1_DutyCycle;
-uint8_t M2_DutyCycle;
+
+//								Global Variables for motor control 
+volatile int TimerCounter;
 
 
+
+//								Motor Control Functions
 void T0_init(void);
 
 void T1_init(void);
 
 void T2_init(void);
 
-void SetDrive(uint8_t M1_DutyCycle, uint8_t M2_DutyCycle , uint8_t M_direc);
+void TimersInit(void);
+
+void SetDrive(double M1_DutyCycle, double M2_DutyCycle);
+
+void CalculatePwm(uint8_t error, uint8_t Zone);
+
+void Sorting(char sortState);
+
+void StartDrive(void);
+
+void StopDrive(void);
 
 
 
