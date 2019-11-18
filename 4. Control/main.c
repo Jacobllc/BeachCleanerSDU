@@ -14,42 +14,54 @@
 #include "usart.h"
 #include "ADC_Setup.h"
 
-volatile int Besafe = 1;
+//						Global Variables
+volatile int tick = 0;
+char mode = 1;
 
 int main(void)
 {
 
-	uart_init(); // open the communication to the microcontroller
-	io_redirect(); // redirect input and output to the uart
-	uart_init();
-	io_redirect();
-	IO_init();	
-	//T0_init();
-	T1_init();
-	//T2_init();
-	
-	M_Direc = 0b0000;
-	M1_DutyCycle = 0;
-	M2_DutyCycle = 0;
-	SetDrive(M1_DutyCycle, M2_DutyCycle , M_Direc);
-	Enable_ADC();
-
-	
+	uart_init();   // open the communication to the microcontroller
+	io_redirect(); // redirect input and output to the uart	
+	IO_init();	   //
+	TimersInit();
+	Enable_ADC();	
 	sei(); // Enable interrupts
 		
     while(1) 
     {	
-		if(adc_result > Max_Curren)
-		{
-			printf("Shit should stop!\n");
+		
+		while(mode == 1){
+			// printf("Safe to run!  \n");	
+			if(adc_result > Max_Curren)
+			{
+			// printf("Shit should stop!\n");
+			//mode = 0;		
+			}
+
+			
+			StartDrive();
+			Sorting(sortState);
+
+											
+
+						
+				adc_result = 0.19 * adc_read(ADC_Channel) - 25; // Untested !!!!!!!!!!!!!!!!!!!!!
+				_delay_ms(1000);
+			
+			
 		}
 		
-		printf("TIMER VALUE %d \n",TCNT1);
+		while(mode == 0){
+			// printf("Not Safe to run!  \n");	
+			
+			StopDrive();
+			
+			
+				
+		}
+		
 
-		adc_result = adc_read(ADC_Channel);
-		printf("ADC value %d \n",adc_result);
-		printf("Channel %x \n",ADMUX);
-		_delay_ms(1000);
 		
 	}
 }
@@ -90,4 +102,10 @@ ISR(TIMER0_OVF_vect){}
 	
 ISR(TIMER1_OVF_vect){}
 		
-ISR(TIMER2_OVF_vect){}
+ISR(TIMER2_OVF_vect){
+	tick++;						// 80  micro
+	if(tick >= 2);				// 160 micro seconds
+	tick = 0;
+	TimerCounter++;
+	
+}
