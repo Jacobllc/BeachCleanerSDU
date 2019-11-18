@@ -7,6 +7,8 @@
 #define GPGGA 1
 #define GPVTG 2
 
+
+
 typedef struct DATA
 {	
 	//From GGA		0		1			2		3		4	  5  6	7	  8	  9	 10	  11 12	13	14   15 
@@ -43,6 +45,8 @@ typedef struct DATA
 	float Speed;	//						,v.v,
 	float dist_wp;
 	float bearing_wp;
+	long dist_sendI2C; 
+	long bearing_sendI2C; 
 	
 }DATA;
 

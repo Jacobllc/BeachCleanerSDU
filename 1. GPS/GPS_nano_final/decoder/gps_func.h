@@ -26,5 +26,6 @@ void dist_to_wp(struct DATA *GPS_Data, coor_t wp);
 void bearing_to_wp(struct DATA *GPS_Data, coor_t WP);
 float rad_to_deg(float rad);
 float deg_to_rad(float deg);
+void Transmit_dist_bearing_i2C(struct DATA *GPS_Data); 
 
 #endif /* GPS_FUNC_H_ */
