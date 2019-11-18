@@ -257,6 +257,18 @@
     <Compile Include="gps_func.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Gps_send.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Gps_send.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="i2c_atmega_328p_slave.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="i2c_atmega_328p_slave.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\atmel_start_pins.h">
       <SubType>compile</SubType>
     </Compile>
