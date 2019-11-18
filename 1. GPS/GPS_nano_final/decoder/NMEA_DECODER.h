@@ -46,7 +46,7 @@ typedef struct DATA
 	float dist_wp;
 	float bearing_wp;
 	long dist_sendI2C; 
-	long bearing_sendI2C; 
+	int bearing_sendI2C; 
 	
 }DATA;
 

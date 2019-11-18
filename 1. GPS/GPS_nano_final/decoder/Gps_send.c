@@ -110,7 +110,7 @@ void Gps_send_Distance(void)
 		checksum = cal_checksum(NMEA1->dist_sendI2C, 32);
 		set_data(checksum);
 		bytes=0;
-		PORTC &= ~(1<<PORTC0); //Set data_ready_flag LOW When bearing and distance had been send.
+		//PORTC &= ~(1<<PORTC0); //Set data_ready_flag LOW When bearing and distance had been send.
 	}
 	else
 	{

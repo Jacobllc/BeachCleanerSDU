@@ -50,8 +50,6 @@ void bearing_to_wp(struct DATA *GPS_Data, coor_t WP){
 	float m_pr_deg_lat = 111.1329*1000;
 	float m_pr_deg_lon = ((111.41288*cos( deg_to_rad(WP.LAT) ) ) - (0.09350*cos( deg_to_rad(3*WP.LAT) ) ) + (0.00012*cos( deg_to_rad(5*WP.LAT) ) )  )*1000;
 	
-	printf("  m pr deg_lon:  %f \n",m_pr_deg_lon);
-	
 	float c = a * m_pr_deg_lat;
 	float d = b * m_pr_deg_lon;
 	
@@ -86,5 +84,8 @@ void Transmit_dist_bearing_i2C(struct DATA *GPS_Data){
 	
 	
 	//Set data_ready_flag
+	if(GPS_Data->quality >= 4){ //If There is a fix
 		PORTC |= (1<<PORTC0); //PORT C0 high
+	}
+	
 }

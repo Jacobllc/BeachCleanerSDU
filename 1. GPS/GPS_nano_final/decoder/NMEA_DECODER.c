@@ -227,6 +227,7 @@ int GPS_Decode(char* msg, struct DATA *GPS_Data)
 							{
 								GPS_Data->quality = msg[i] - 48;
 							}
+							
 							break;
 						}
 						//////////////////////////////////////////////////
@@ -253,10 +254,16 @@ int GPS_Decode(char* msg, struct DATA *GPS_Data)
 		}			//End switch type
 		////////////////////////////////////////////////////////
 		convert(GPS_Data);
+		
+		if(GPS_Data->quality >= 4) //if fix return 1
 		return 1;
+		else
+		return 0;
+		
+		//return 1;
 	}
 	else
-	{
+	{	//if chechsum false return 0
 		return 0;
 	}
 }

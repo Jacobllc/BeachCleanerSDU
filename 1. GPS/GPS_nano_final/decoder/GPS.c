@@ -139,6 +139,7 @@ ISR(INT0_vect) //Interrupt every data package start "Blue light"
 	process=1;
 	//package=0;
 	byte=-1;
+	PORTC &= ~(1<<PORTC0); //Set data_ready_flag LOW When bearing and distance had been send.
 }
 
 
