@@ -55,6 +55,8 @@ C_SRCS +=  \
 ../examples/src/usart_basic_example.c \
 ../GPS.c \
 ../gps_func.c \
+../Gps_send.c \
+../i2c_atmega_328p_slave.c \
 ../main.c \
 ../NMEA_DECODER.c \
 ../src/driver_init.c \
@@ -75,6 +77,8 @@ driver_isr.o \
 examples/src/usart_basic_example.o \
 GPS.o \
 gps_func.o \
+Gps_send.o \
+i2c_atmega_328p_slave.o \
 main.o \
 NMEA_DECODER.o \
 src/driver_init.o \
@@ -88,6 +92,8 @@ driver_isr.o \
 examples/src/usart_basic_example.o \
 GPS.o \
 gps_func.o \
+Gps_send.o \
+i2c_atmega_328p_slave.o \
 main.o \
 NMEA_DECODER.o \
 src/driver_init.o \
@@ -101,6 +107,8 @@ driver_isr.d \
 examples/src/usart_basic_example.d \
 GPS.d \
 gps_func.d \
+Gps_send.d \
+i2c_atmega_328p_slave.d \
 main.d \
 NMEA_DECODER.d \
 src/driver_init.d \
@@ -114,6 +122,8 @@ driver_isr.d \
 examples/src/usart_basic_example.d \
 GPS.d \
 gps_func.d \
+Gps_send.d \
+i2c_atmega_328p_slave.d \
 main.d \
 NMEA_DECODER.d \
 src/driver_init.d \
@@ -164,6 +174,20 @@ examples/src/usart_basic_example.o: ../examples/src/usart_basic_example.c
 	
 
 ./gps_func.o: .././gps_func.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"../Config" -I"../examples/include" -I"../include" -I"../utils" -I"../utils/assembler" -I".." -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./Gps_send.o: .././Gps_send.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"../Config" -I"../examples/include" -I"../include" -I"../utils" -I"../utils/assembler" -I".." -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./i2c_atmega_328p_slave.o: .././i2c_atmega_328p_slave.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"../Config" -I"../examples/include" -I"../include" -I"../utils" -I"../utils/assembler" -I".." -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

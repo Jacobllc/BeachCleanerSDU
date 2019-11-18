@@ -12,6 +12,10 @@ GPS.c
 
 gps_func.c
 
+Gps_send.c
+
+i2c_atmega_328p_slave.c
+
 main.c
 
 NMEA_DECODER.c
