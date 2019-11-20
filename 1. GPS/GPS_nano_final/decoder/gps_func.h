@@ -12,14 +12,20 @@
 
 //Own definitions
 #define PI 3.14159265358979323846
+#define m_pr_deg_lat 1111329.0;
+
 
 //Structures definition
-typedef struct{
+typedef struct coor_t{
 	float LAT;
 	uint32_t LAT_int;
 	float LON;
 	uint32_t LON_int;
 }coor_t;
+
+//variables definition 
+float m_pr_deg_lon; 
+
 
 //Function declarations
 void dist_to_wp(struct DATA *GPS_Data, coor_t wp);

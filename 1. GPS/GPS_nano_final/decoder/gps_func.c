@@ -2,13 +2,16 @@
  * gps_func.c
  *
  * Created: 07-10-2019 21:48:02
- *  Author: Magnus
+ *  Author: Magnus Nielsen-Man
  */ 
 #include "gps_func.h"
 #include "NMEA_DECODER.h"
 #include <stdio.h>
 #include <avr/io.h> 
 
+//define my var 
+int first_dist=0;
+int first_bearing=0;
 
 
 float rad_to_deg(float rad){
@@ -29,8 +32,10 @@ void dist_to_wp(struct DATA *GPS_Data, coor_t WP){
 	int b=  (WP.LON_int - ( GPS_Data->LON_FINAL )); 
 	
 	//converting a b to dist in meters using formula for 1deg in m:
-	float m_pr_deg_lat = 111.1329*1000;
-	float m_pr_deg_lon = ((111.41288*cos( deg_to_rad(WP.LAT) ) ) - (0.09350*cos( deg_to_rad(3*WP.LAT) ) ) + (0.00012*cos( deg_to_rad(5*WP.LAT) ) )  )*1000;
+	if(first_dist==0){
+	m_pr_deg_lon = ((111.41288*cos( deg_to_rad(WP.LAT) ) ) - (0.09350*cos( deg_to_rad(3*WP.LAT) ) ) + (0.00012*cos( deg_to_rad(5*WP.LAT) ) )  )*1000;
+	first_dist++;
+	}
 	
 	float c = a * m_pr_deg_lat;
 	float d = b * m_pr_deg_lon;
@@ -47,10 +52,10 @@ void bearing_to_wp(struct DATA *GPS_Data, coor_t WP){
 	int b=  (WP.LON_int - ( GPS_Data->LON_FINAL ));
 	
 	//converting a b to dist in meters using formula for 1deg in m:
-	float m_pr_deg_lat = 111.1329*1000;
-	float m_pr_deg_lon = ((111.41288*cos( deg_to_rad(WP.LAT) ) ) - (0.09350*cos( deg_to_rad(3*WP.LAT) ) ) + (0.00012*cos( deg_to_rad(5*WP.LAT) ) )  )*1000;
-	
-	printf("  m pr deg_lon:  %f \n",m_pr_deg_lon);
+	if(first_bearing==0){
+	m_pr_deg_lon = ((111.41288*cos(deg_to_rad(WP.LAT) ) ) - (0.09350*cos( deg_to_rad(3*WP.LAT) ) ) + (0.00012*cos( deg_to_rad(5*WP.LAT) ) )  )*1000;
+	first_bearing++;
+	}
 	
 	float c = a * m_pr_deg_lat;
 	float d = b * m_pr_deg_lon;
@@ -66,9 +71,6 @@ void bearing_to_wp(struct DATA *GPS_Data, coor_t WP){
 	
 	GPS_Data->bearing_wp = rad_to_deg(angle);
 }
-
-
-
 
 void Transmit_dist_bearing_i2C(struct DATA *GPS_Data){
 	
@@ -86,5 +88,9 @@ void Transmit_dist_bearing_i2C(struct DATA *GPS_Data){
 	
 	
 	//Set data_ready_flag
+	/*
+	if(GPS_Data->quality >= 4){ //If There is a fix
 		PORTC |= (1<<PORTC0); //PORT C0 high
+	}
+	*/
 }
