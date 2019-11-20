@@ -12,10 +12,10 @@
 
 uint8_t opcode;
 uint8_t return_checksum=0;
-uint8_t byte=0;
 
-char status =1;
-int dir = 257;
+
+char status =255;
+int dir = 10;
 long dist = 30000;
 
 int cal_checksum(int value, char length)
@@ -87,34 +87,48 @@ void Gps_send_status(void)
 
 void Gps_send_Direction(void)
 {
+	char data;
+	
 	if (return_checksum==1)
 	{
-		int checksum;
+		char checksum;
 		
-		checksum = cal_checksum((dir>>(8*byte)), 16);
+		checksum = cal_checksum(dir, 16);
 		set_data(checksum);
 		return_checksum=0;
 	}
 	else
 	{
-		set_data(dir>>(8*byte));	
-		printf("byte value %d \n",bytes);
-		printf("byte value %d \n",dir>>(8*byte));
+		data= dir>> 8*bytes;
+		set_data(data);	
+		bytes++;
+		if (bytes==2)
+		bytes=0;
+	
+		
 	}
 }
 
 void Gps_send_Distance(void)
 {
+	char data;
+	
 	if (return_checksum==1)
 	{
-		int checksum;
+		char checksum;
 		
-		checksum = cal_checksum(257, 16);
+		checksum = cal_checksum(dist, 32);
 		set_data(checksum);
 		return_checksum=0;
 	}
 	else
 	{
-		set_data(1);
+		data= dist>> 8*bytes;
+		set_data(data);
+		bytes++;
+		if (bytes==4)
+		bytes=0;
+		
+	
 	}
 }

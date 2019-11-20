@@ -11,7 +11,7 @@
 #include "i2c_atmega_328p_slave.h"
 #include "Gps_send.h"
 
-volatile int data;
+volatile uint8_t data;
 
 
 void I2C_recieve(uint8_t received_data)							//isr on receiving a byte on i2c
@@ -25,16 +25,18 @@ void I2C_data_ACK_request(void)												//if master request data from slave
 {
 	i2c_service();
 	i2c_transmit_data(data);
-	bytes++;
-	printf("bytes value %d\n",bytes);
+	
+	
 }
 
  
  void I2C_data_NACK_request(void)												//if master request data from slave
  {
+	 
 	 i2c_service();
 	 i2c_transmit_data(data);
-	 bytes=0;
+	
+	 
  }
 
 
@@ -79,14 +81,12 @@ ISR(TWI_vect)
 		case TW_ST_SLA_ACK:
 		// master is requesting data using NACK,master expects only one additional byte. call the request callback
 		I2C_data_NACK_request();
-		printf("NACK\n");
 		TWCR = (1<<TWIE) | (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
 		break;
 		
 		case TW_ST_DATA_ACK:
 		// master is requesting data using ACK, master expects multiple bytes. call the request callback
 		I2C_data_ACK_request();
-		printf("ACK\n");
 		TWCR = (1<<TWIE) | (1<<TWINT) | (1<<TWEA) | (1<<TWEN);
 		break;
 		
