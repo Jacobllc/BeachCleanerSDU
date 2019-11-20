@@ -68,7 +68,7 @@ int get_gps_message (char* msg_main){
 	}
 	else
 	{
-		return 0;		//return addrres to nothing 
+		return 0;	//return addrres to nothing 
 	}
 }
 
@@ -99,5 +99,4 @@ ISR(INT0_vect) //Interrupt every data package start "Blue light"
 {
 	process=1;
 	byte=-1;
-	//PORTC &= ~(1<<PORTC0); //Set data_ready_flag LOW When bearing and distance had been send.
 }

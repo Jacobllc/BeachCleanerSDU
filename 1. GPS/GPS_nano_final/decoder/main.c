@@ -16,7 +16,7 @@ int main(void)
 	//	coor_t WP[5]  = {54.91, 911290, 9.78, 780456};
 	
 	coor_t WP[5];
-	WP[1].LAT = 51.91;
+	WP[1].LAT = 54.91;
 	WP[1].LON = 9.78;
 	WP[1].LAT_int = 911290;
 	WP[1].LON_int = 780456;
@@ -51,7 +51,7 @@ int main(void)
 			PORTC |= (1<<PORTC0);						//PORT C0 high
 		}
 		
-		if(NMEA1.dist_wp<100)
-		WP_NUM++;
+		//if(NMEA1.dist_wp<100)
+		//WP_NUM++;
 	}
 }
