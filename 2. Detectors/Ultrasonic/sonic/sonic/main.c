@@ -115,7 +115,7 @@ void init_timers(){
 }
 void min_dist(int dis)
 {
-	if((getdist1()>dis) && (getdist2()>dis) && (getdist3()>dis) )
+	if((getdist1()>dis) && (getdist2()>dis) && (getdist3()>dis) && (getdist4()>dis))
 	{
 		obs = 0;
 	}
@@ -124,6 +124,7 @@ void min_dist(int dis)
 		obs = 1;
 	}
 }
+
 int distance (void)
 {
 	int n = 30;		// Samples per average
@@ -133,44 +134,48 @@ int distance (void)
 	volatile int distance_1_array[n], distance_2_array[n], distance_3_array[n], distance_4_array[n];
 	volatile int av_distance_array[s];
 	volatile int sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0;
-
+	/*
 	for (i=0; i<n; i++)
 	{
 		// Fill arrays with distances
-		/*distance_1_array[i] = getdist1();
+		
+		distance_1_array[i] = getdist1();
 		distance_2_array[i] = getdist2();
 		distance_3_array[i] = getdist3();
-		*/
 		distance_4_array[i] = getdist4();
-		
+				
 		// Build sum of distances
-		/*sum1 = sum1 + distance_1_array[i];
+		
+		sum1 = sum1 + distance_1_array[i];
 		sum2 = sum2 + distance_2_array[i];
 		sum3 = sum3 + distance_3_array[i];
-		*/
 		sum4 = sum4 + distance_4_array[i];
 		
 	}
-
+*/
 	// Calculate average
-	/*av_distance_array[1] = sum1/n;
-	av_distance_array[2] = sum2/n;
+	/*
+	av_distance_array[1] = sum1/n;
+	av_distance_array[2] = sum2/n;	
 	av_distance_array[3] = sum3/n;
+	av_distance_array[4] = sum4/n;	
 	*/
-	av_distance_array[4] = sum4/n;
 	
+	// test values for the zone parameters
+	av_distance_array[1] = 25;
+	av_distance_array[2] = 25;
+	av_distance_array[3] = 25;
+	av_distance_array[4] = 45;
+
 	
-	av_distance_array[1] = 45;
-	av_distance_array[2] = 45;
-	av_distance_array[3] = 45;
-	
-	
+	//printf(" sum: %d  distance: %d  %d   ",sum1,av_distance_array[1],av_distance_array[2]);
+	//printf("%d  %d \n",av_distance_array[3],av_distance_array[4]);
+	//printf("%d  %d  %d  %d",av_distance_array[1],av_distance_array[2],av_distance_array[3],av_distance_array[4]);
 	
 	//Determine the zone
-	printf(" sum: %d  distance: %d \n",sum4,av_distance_array[4]);
-	if ((av_distance_array[1])&&(av_distance_array[2])&&(av_distance_array[3])&&(av_distance_array[4])>=41) zone=3;
-	if (((av_distance_array[1])&&(av_distance_array[2])&&(av_distance_array[3])&&(av_distance_array[4])>=21)&&((av_distance_array[1])&&(av_distance_array[2])&&(av_distance_array[3])&&(av_distance_array[4])<=40))zone=2;
-	if ((av_distance_array[1])&&(av_distance_array[2])&&(av_distance_array[3])&&(av_distance_array[4])<=20) zone=1;
+	if ((av_distance_array[1])>=41 && (av_distance_array[2])>=41 && (av_distance_array[3])>=41 && (av_distance_array[4])>=41) zone=3;
+	if (((av_distance_array[1])<=40 || (av_distance_array[2])<=40 ||(av_distance_array[3])<=40 || (av_distance_array[4])<=40) && ((av_distance_array[1])>=21 && (av_distance_array[2])>=21 && (av_distance_array[3])>=21) &&  (av_distance_array[4])>=21) zone=2;
+	if ((av_distance_array[1])<=20 || (av_distance_array[2])<=20 || (av_distance_array[3])<=20 || (av_distance_array[4])<=20) zone=1;
 	printf("%d ",zone);
 // return zone;
 }
@@ -189,10 +194,10 @@ int main(void)
     {
 		
 		distance();
-		/*if (TCNT1 == 5900) // toggle pin every time you read the four sensors. XOR the pin to see it
+		if (TCNT1 == 5900) // toggle pin every time you read the four sensors. XOR the pin to see it
 		{
 			PORTD ^=(1<<PORTD2);
-		}*/
+		}
 		 }
 }
 
