@@ -125,10 +125,6 @@ void update_motor_data (void)
 
 
 
-
-
-
-
 ISR(INT0_vect)
 {
 	status=Gps_newdata;
