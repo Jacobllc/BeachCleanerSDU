@@ -8,10 +8,11 @@
 #define F_CPU 16000000UL
 #include <avr/io.h>
 #include <stdio.h>
+#include <avr/interrupt.h>
 #include "usart.h"
 #include "set_up.h"
 
-int obs;
+int obs,flag,zone=0;
 void init_io(){
 	//Sensor1
 	DDRD |= (1<<DDD4); //PD3 is an output (TRIG1)
@@ -124,12 +125,36 @@ void min_dist(int dis)
 		obs = 1;
 	}
 }
+int deadswitch(void)
+{
+	DDRD &= ~(1 << DDD2); //CLEAR PD2 INT0 PIN IS NOW INPUT
+	PORTD |= (1 << PORTD2); // TURN ON PULL UP, PULL UP ENABLE
+	
+	EICRA |= (1 << ISC01); //SET INTO TO TRIGGER AT FALLING EDGES
+	EIMSK |= (1 << INT0); //TURNS ON THE INTERRPUT FOR INT0
+	sei();
+	
+	
+	
+}
+ISR (INT0_vect)// EXTERNAL INTERRUPT 0
+{
+	if ((1<<PIND2))
+	{
+		flag=1;
+		zone = 1;
+		// commands for the respective motors and what to look for have to be implemented
+		
+		
+	}
+	printf("%d",flag);
+}
 
 int distance (void)
 {
 	int n = 30;		// Samples per average
 	int s = 4;		// Number of sensors
-	int i, zone=0;
+	int i;
 	
 	volatile int distance_1_array[n], distance_2_array[n], distance_3_array[n], distance_4_array[n];
 	volatile int av_distance_array[s];
@@ -187,13 +212,14 @@ int main(void)
     uart_init(); //open comms to microcontroller (Realterm)
     io_redirect();
 	init_timers();
+	deadswitch(); // the switches will be implemented with an extension of the same trigger pin
 	
 	int din;
 	
     while (1) 
     {
 		
-		distance();
+		//distance();
 		if (TCNT1 == 5900) // toggle pin every time you read the four sensors. XOR the pin to see it
 		{
 			PORTD ^=(1<<PORTD2);
