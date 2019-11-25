@@ -6,6 +6,9 @@
  */ 
 
 #include <avr/io.h>
+#include <stdio.h>
+#include <avr/interrupt.h>
+#include "ADC_Setup.h"
 
 
 void Enable_ADC(void){
@@ -41,3 +44,41 @@ ADC7 MUX 0111
 	//EICRA |= (0 << ISC00)| (1 << ISC01); // set INT0 to trigger on falling edge logic change
 
 */
+
+
+
+ISR(ADC_vect){
+	switch(ADMUX){
+		case 0x40:
+		//printf("ADC1 RESULT = %d\n",adc_result);
+		//printf("ADC CHANNEL 0\n");
+		Max_Curren = 31;
+		ADC_Channel = 1;
+		break;
+		
+		case 0x41:
+		//printf("ADC2 RESULT = %d\n",adc_result);
+		//printf("ADC CHANNEL 1\n");
+		Max_Curren = 32;
+		ADC_Channel = 2;
+		break;
+		
+		case 0x42:
+		//printf("ADC3 RESULT = %d\n",adc_result);
+		//printf("ADC CHANNEL 2\n");
+		Max_Curren = 33;
+		ADC_Channel = 3;
+		break;
+		
+		case 0x43:
+		//printf("ADC4 RESULT = %d\n",adc_result);
+		//printf("ADC CHANNEL 3\n");
+		Max_Curren = 34;
+		ADC_Channel = 0;
+		break;
+		default:
+		printf("Broken!\n");
+		break;
+	}
+}
+

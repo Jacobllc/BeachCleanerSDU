@@ -12,14 +12,22 @@
  */ 
 
  #define F_CPU 16000000UL
+ 
+ #define rampslow_scale 390
+ #define rampfast_scale 4
+ #define safty_scale 1560
+ 
  #include <stdio.h>
  #include <avr/io.h>
  #include <util/delay.h>
+ #include <avr/interrupt.h>
  #include "PWM.h"
  #include "MACROS.h"
  
  #define MPWM_MAX 100
  #define MPWM_MIN 20
+ 
+ 
  double M1_DutyCycle_n;
  double M2_DutyCycle_n;
  double M1_DutyCycle = MPWM_MIN;
@@ -29,6 +37,10 @@
  
  char sortState = 0;
 
+volatile int counter_rampslow=0;
+volatile int counter_rampfast=0;
+volatile int counter_safety=0;
+	
 //////////////////////         Timer0 Setup 
 void T0_init(void){
 		TCCR0A |= (1 << COM0A1) | (0 << COM0A0); // set OC0A Clear OC0! on compare, sett OC0A at Bottom ( non inverting)
@@ -37,7 +49,7 @@ void T0_init(void){
 		OCR0A = 255; //duty cycle OCR0A PIN6
 		OCR0B = 255;//duty cycle OCR0B PIN5
 		TCCR0B |= (0 << CS00) | (1 << CS01) | (0 << CS02);			// 7.8kHz
-		TIMSK0 |= (1 << TOIE0);
+		//TIMSK0 |= (1 << TOIE0);
 }
 
 
@@ -46,10 +58,12 @@ void T1_init(void){
 		TCCR1A |= (1 << COM1A1) | (0 << COM1A0);
 		TCCR1A |= (1 << COM1B1) | (0 << COM1B0);
 		TCCR1A |= (0<<WGM13) | (1<<WGM12) | (1<<WGM11) |(1<<WGM10);   // set Timer1 to 16bit fast PWM
-		OCR1A = 1000;  //duty cycle OCR0A PIN13
-		OCR1B = 1000;  //duty cycle OCR0B PIN14
-		TCCR1B |= (0<<CS12) | (0<<CS11) | (1 << CS10);				  // set pre-scaler to 64 FREQ - 7.8kHz
-		TIMSK1 |= (1 << TOIE1 );
+		OCR1A = 30000;  //duty cycle OCR0A PIN13
+		OCR1B = 30000;  //duty cycle OCR0B PIN14
+		TCCR1B |= (1<<CS12) | (0<<CS11) | (1 << CS10);				  // set pre-scaler to 64 FREQ - 7.8kHz
+		//TIMSK1 |= (1 << TOIE1 );
+		
+		
 }
 
 
@@ -274,3 +288,31 @@ Nr		Register		PORTnx			State				Timerx
 
 
 */ 
+
+
+
+
+ISR(TIMER2_OVF_vect)
+{
+	counter_rampslow++;
+	counter_rampfast++;
+	counter_safety++;
+	
+	if (counter_rampslow>rampslow_scale)
+	{
+		//Toggle(pd2);
+		counter_rampslow=0;
+	}
+	
+	if (counter_rampfast>rampfast_scale)
+	{
+		//Toggle(pd2);
+		counter_rampfast=0;
+	}
+	
+	if (counter_safety>safty_scale)
+	{
+		Toggle(pd2);
+		counter_safety=0;
+	}
+}
