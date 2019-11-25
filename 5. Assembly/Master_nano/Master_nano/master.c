@@ -59,7 +59,7 @@ int cal_checksum(int value, char length)
 
 
 
-void update_gps_data (void)
+char update_gps_data (void)
 {	
 	Gps_data New_data;
 	char checksum_cal;
@@ -68,13 +68,16 @@ void update_gps_data (void)
 	New_data.checksum = get_data_8bit(data_check, GPS_address);
 	checksum_cal=cal_checksum(New_data.status, 8);
 	
+	
+
+	
 	if (((New_data.status==1))&&(checksum_cal==New_data.checksum))
 	{
 
 		Gps.status=New_data.status;
-		
-		New_data.direction = get_data_int(Direction, GPS_address);
-		New_data.checksum = get_data_int(data_check, GPS_address);
+		printf("Status messgae was ok \n");
+	    New_data.direction = get_data_int(Direction, GPS_address);
+		New_data.checksum = get_data_8bit(data_check, GPS_address);
 		checksum_cal=cal_checksum(New_data.direction, 16);
 		
 	
@@ -82,19 +85,24 @@ void update_gps_data (void)
 		{
 			
 			Gps.direction=New_data.direction;
+			printf("direction  messgae was ok \n");
+			return 1;
 			
-			New_data.distnace = get_data_int(Distance, GPS_address);
-			New_data.checksum = get_data_int(data_check, GPS_address);
-			checksum_cal=cal_checksum(New_data.distnace, 16);
+		//	New_data.distnace = get_data_int(Distance, GPS_address);
+		//	New_data.checksum = get_data_int(data_check, GPS_address);
+		//	checksum_cal=cal_checksum(New_data.distnace, 16);
 			
-			if ((!(New_data.distnace==-1))&&(checksum_cal==New_data.checksum))
-			{
-				Gps.distnace=New_data.distnace;
-			}
+		//	if ((!(New_data.distnace==-1))&&(checksum_cal==New_data.checksum))
+		//	{
+		//		printf("distance  messgae was ok \n");
+		//		Gps.distnace=New_data.distnace;
+		//		return 1;
+		//	}
 		}
 			
 	}
-	
+
+return 0;	
 }
 	
 void update_sensor_data (void)

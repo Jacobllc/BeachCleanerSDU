@@ -72,10 +72,9 @@ void bearing_to_wp(struct DATA *GPS_Data, coor_t WP){
 	GPS_Data->bearing_wp = rad_to_deg(angle);
 }
 
-void Transmit_dist_bearing_i2C(struct DATA *GPS_Data){
-	
-	
-	//Convert dist and bearing  
+void Transmit_dist_bearing_i2C(struct DATA *GPS_Data)
+{
+		//Convert dist and bearing  
 		//Sending dist to DATA struct as long int 
 		long dist_send;
 		dist_send = (long)((GPS_Data->dist_wp) *1000);
@@ -85,12 +84,4 @@ void Transmit_dist_bearing_i2C(struct DATA *GPS_Data){
 		int bearing_send;
 		bearing_send = (int)( (GPS_Data->bearing_wp/360)*32767 );
 		GPS_Data->bearing_sendI2C = bearing_send; 
-	
-	
-	//Set data_ready_flag
-	/*
-	if(GPS_Data->quality >= 4){ //If There is a fix
-		PORTC |= (1<<PORTC0); //PORT C0 high
-	}
-	*/
 }

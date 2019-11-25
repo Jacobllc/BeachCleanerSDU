@@ -278,7 +278,6 @@ int get_data_int( uint8_t opcode, uint8_t address)
 		}
 		
 		i2c_stop();
-		printf("stopping i2c \n ");
 		printf("Result=%d\n",result);
 		return result;
 		
