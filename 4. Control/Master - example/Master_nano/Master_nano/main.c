@@ -19,77 +19,33 @@
  {
 	 DDRD = 0xFF; // I/O board PD4..7 as outputs, for LEDs
 	 PORTD = 0xFF; // Enable internal pull at PC0...3 inputs
-	 
-	 i2c_init();
 	 i2c_timer0_init();
-	 GPS_init();
+	 i2c_init();
 	 uart_init();
 	 io_redirect();
-	 MPU9250_init();
-	 AK8963_init();			
-	
-	
-	
 
+	   send_data_int(1, Motor_address, 1000);
+	//scan_i2c();
 		 while (1)
 		 {	
 			 
-			 switch(status)
-			 {
-				 
-				  case Nofix:
-				  {
-					   printf("Waiting for Gps fix \n");
-					  
-					  break;
-				  }
-				 
-				 
-				 case Running:
-				 {
-					 update_compass_data();
-					 
-					 Calc_obs_heading();
-					 
-					 printf("Direction %.1f Distance  %li \n", ideal_heading, Gps.distnace);
-					 print_heading();
-					 printf("Error %d \n",motor.error);
-					 
-					 break;
-				 }
-				 
-				 case Gps_newdata:
-				 {
-					 
-					 int update=0;
-					 update = update_gps_data();
-					 
-					 if (update==1)
-					 {
-						 printf("GPS controller Update\n");	
-						 Gps_counter_to_zero();
-					 }
-										   
-					status=Running;
-				    break; 
-			 	 }
-				 
-				 case Gps_failure:
-			 	 {
-					 printf("Gps failure! \n");	
-					break;
-			 	 }
-				  
-			     case Compass_failure:
-				 {
-					 printf("Compass failure! \n");	
-					break;
-				 }
-				 
-			 }
+			 // send_data_8bit(Motor_error, Motor_address, 150);
+			  
+			  
+			 // _delay_ms(50);
+	
+			// data = get_data_8bit(Motor_status, Motor_address);
+		    // printf(" Received status %d \n",data);
+		   // send_data_8bit(Motor_error, Motor_address, 1);
+			
+			
+			  
+			  
 			 
+			  
+			  
 		
-		_delay_ms(300);
+			
 		 }
 	 
 	 }

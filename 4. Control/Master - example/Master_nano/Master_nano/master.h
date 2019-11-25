@@ -16,24 +16,25 @@
  #define Compass_failure 4
 
 
-
+/////////////////// Device addresses/////////////////////////////////
 #define GPS_address 0x40
-#define Sensor_address 0x41
-
-
+#define Motor_address 0x41
 
 /////////////////// GPS Commands/////////////////////////////////
 #define Direction 0x01
 #define Distance 0x02
 
-/////////////////// GPS Commands/////////////////////////////////
-
-
+/////////////////// MOTOR Commands/////////////////////////////////
+#define Motor_status 0x00
+#define Motor_error 0x01
+#define Motor_zone 0x02
 /////////////////////////////////////////////////////////////////
 
  char Gps_update;
  char status;
- float ideal_heading;		
+ float ideal_heading;
+ char motor_status;
+ char sensor_zone;		
 
 
 typedef struct counter

@@ -6,7 +6,7 @@
  */ 
 
 #define F_CPU 16000000UL
-#define F_SCL 400000UL // SCL frequency
+#define F_SCL 100000UL // SCL frequency
 #define Prescaler 1
 #define TWBR_val ((((F_CPU / F_SCL) / Prescaler) - 16 ) / 2)
 
@@ -403,7 +403,10 @@ int send_data_8bit( uint8_t opcode, uint8_t address, uint8_t data)
 			{
 				printf("The receiver did not ack the data \n");   i2c_stop();   return -1;
 			}
+		
 		}
+	
+				printf("Data has been sent \n"); return 1;	
 	}	
 }
 
@@ -437,6 +440,9 @@ int send_data_int( uint8_t opcode, uint8_t address, int data)
 				printf("The receiver did not ack the data \n");   i2c_stop();   return -1;
 			}
 		}
+		
+		
+		printf("Data has been sent \n"); return 1;
 	}
 }
 
@@ -506,7 +512,7 @@ ISR (TIMER0_COMPA_vect) // timer0 overflow interrupt
 {	
 	counter++;
 	
-	if (counter==10)
+	if (counter==30)
 	{
 		flag=1;
 		counter=0;
