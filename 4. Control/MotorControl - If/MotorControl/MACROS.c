@@ -18,7 +18,7 @@ void IO_init(void){	///////////////////////// Initial Pin Setup
 	DDRB  = 0b00001011;
 	PORTB = 0b00000000;
 	
-	DDRC  = 0b00001111;
+	DDRC  = 0b00000000; // here the declaration of the adc pins had to be changed, as the directions was limiting the reading as a pull up resistor, acting as a voltage divider
 	PORTC = 0b00000000;
 	
 	DDRD  = 0b11101000;

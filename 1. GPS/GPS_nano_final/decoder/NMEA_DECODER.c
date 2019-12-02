@@ -23,7 +23,9 @@ void init(struct DATA *GPS_Data)
 	GPS_Data->quality=0;
 	GPS_Data->Speed=0;
 	GPS_Data->bearing_true=0;
+	GPS_Data->bearing_sendI2C=0; 
 	GPS_Data->dist_wp=0;
+	GPS_Data->dist_sendI2C=0;
 	GPS_Data->bearing_wp=0;
 }
 
