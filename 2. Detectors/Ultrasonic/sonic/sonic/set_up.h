@@ -6,9 +6,15 @@
  */ 
 #define F_CPU 16000000UL
 #include <avr/io.h>
+#include <stdio.h>
+#include <avr/interrupt.h>
 
 #ifndef SET_UP_H_
 #define SET_UP_H_
+
+uint8_t zone; 
+volatile int av_distance_array[4];
+
 
 void init_io(void);
 void init_timers(void);
