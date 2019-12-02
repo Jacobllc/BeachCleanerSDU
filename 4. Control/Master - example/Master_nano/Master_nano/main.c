@@ -23,13 +23,28 @@
 	 i2c_init();
 	 uart_init();
 	 io_redirect();
-		
+	 Dist.dist[1]=0;
+	 Dist.dist[2]=0;
+	 Dist.dist[3]=0;
+	 Dist.dist[4]=0;	
 		
 		scan_i2c();
 	   //send_data_int(1, Motor_address, 1000);
 	
 		 while (1)
 		 {	
+			update_sensor_data();
+			//data = get_data_8bit(Get_Zone, Dist_adress);
+			//printf("Zone: %d\n", data);
+			
+			 printf("Dist zone: %d\n", Dist.Zone);
+			 printf("Dist 1: %d\n", Dist.dist[0]);
+			 printf("Dist 2: %d\n", Dist.dist[1]);
+			 printf("Dist 3: %d\n", Dist.dist[2]);
+			 printf("Dist 4: %d\n", Dist.dist[3]);
+			
+			
+			 /*
 			  data = get_data_8bit(Motor_status, Motor_address);
 			  printf(" Received status %d \n",data);
 			  
@@ -37,24 +52,12 @@
 			  scanf("%d",&motor.mode);
 			  send_data_8bit(Motor_zone, Motor_address, motor.mode);
 			  
-			    printf(" Insert the error to be sent\n");
-			    scanf("%d",&motor.error);
-			    send_data_int(Motor_error, Motor_address, motor.error);
-			  
-			  _delay_ms(50);
-	
-			// data = get_data_8bit(Motor_status, Motor_address);
-		    // printf(" Received status %d \n",data);
-		   // send_data_8bit(Motor_error, Motor_address, 1);
-			
-			
-			  
-			  
+			  printf(" Insert the error to be sent\n");
+			  scanf("%d",&motor.error);
+			  send_data_int(Motor_error, Motor_address, motor.error);
+			  */
 			 
-			  
-			  
-		
-			
+			  _delay_ms(1000);
 		 }
 	 
 	 }
