@@ -41,7 +41,7 @@ void dist_to_wp(struct DATA *GPS_Data, coor_t WP){
 	float d = b * m_pr_deg_lon;
 	
 	//finding dist between pos and wp
-	float dist = (sqrt(pow(c,2) + pow(d,2)))/1000000 ;
+	float dist = (sqrt(pow(c,2) + pow(d,2)))/1000 ;
 	
 	GPS_Data->dist_wp = dist; 
 }
@@ -63,10 +63,20 @@ void bearing_to_wp(struct DATA *GPS_Data, coor_t WP){
 	if(c==0){ c=0.000001;}; //To avoid divide by 0 error.
 	if(d==0){ d=0.000001;};
 	
-	float angle = atan2(d, c);
-	
-	if(angle<0){
-		angle = angle - (PI/2);
+	float angle;
+	if(d>0 && c>0){ //1. quatrant
+		angle = atan2(d, c);
+	}
+	if(d<0 && c>0){ //2. quatrant
+		angle = atan2(d, c);
+		angle = (angle) +(2*PI);
+	}
+	if(d<0 && c<0){ //3. quatrant
+		angle = atan2(d, c);
+		angle = (angle) + (2*PI);
+	}
+	if(d>0 && c<0){ //4. quatrant
+		angle = atan2(d, c);
 	}
 	
 	GPS_Data->bearing_wp = rad_to_deg(angle);

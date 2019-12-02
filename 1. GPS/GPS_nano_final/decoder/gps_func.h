@@ -12,7 +12,7 @@
 
 //Own definitions
 #define PI 3.14159265358979323846
-#define m_pr_deg_lat 1111329.0;
+#define m_pr_deg_lat 111132.90
 
 
 //Structures definition
