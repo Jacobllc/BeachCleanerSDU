@@ -6,7 +6,8 @@
  */ 
 
 #include <avr/io.h>
-
+#include <stdio.h>
+#include "ADC_Setup.h"
 
 void Enable_ADC(void){
 	
@@ -16,12 +17,23 @@ void Enable_ADC(void){
 }
 
 uint16_t adc_read(uint8_t adc_channel){
+	//printf("Reset ADC\n");
 	ADMUX &= 0xf0; // clear any prev used channael but keep internal reference
+	//printf("Set Channel\n");
 	ADMUX |= adc_channel; // set the desired channel
+	//printf("Start Conversion\n");
 	ADCSRA |= (1<<ADSC);
 	// now wait for the convresion
-	//while( (ADCSRA & (1<<ADSC) ) );
 	
+	ADC_Channel++;       //go trough the channels
+	if(ADC_Channel >3)
+	ADC_Channel = 0;   // start over everytime is called
+
+	
+	while( (ADCSRA & (1<<ADSC) ) ){
+		
+
+	}	
 	// now we have result so return it to the calling function
 	return ADC;
 }
