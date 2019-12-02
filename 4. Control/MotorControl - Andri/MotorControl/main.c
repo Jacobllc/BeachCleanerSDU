@@ -16,72 +16,49 @@
 #include "i2c_atmega_328p_slave.h"
 #include "Motor_i2c.h"
 //						Global Variables
-char status = 10;
+
 
 int main(void)
 {
-	
+	new_data = 0;
+	status = 0;
+	zone = 1;	
+		
 	uart_init();   // open the communication to the microcontroller
 	io_redirect(); // redirect input and output to the uart	
-	//IO_init();	   //
+	IO_init();	   //
 	TimersInit();
+	PWM_init();
 	//Enable_ADC();
-	//i2c_init(I2C_ADDR);	
-	//sei();
-	DDRD |= (1 << DDD2);
-	PORTD &= ~(1<< PORTD2);
-	
-	
+	i2c_init(I2C_ADDR);	
 	sei();
+	//DDRD |= (1 << DDD2);
+	//PORTD &= ~(1<< PORTD2);
+	//sei();
 		
     while(1) 
-    {	
+	
+	
+	
+    {	printf("The error is %d   and new data = %d \n",error, new_data);
 		
 		
-	//	Toggle(pd2);
+		if (new_data==1)
+		{
+			motor_handler();
+			
+			new_data = 0;	
+		}
 		
-		_delay_us(100);
-	//	while(status == 10){
-			
-			//printf("Error %d and zone %d\n",error,zone);
-			//CalculatePwm(error, zone);	
-			//StartDrive();
-			//Sorting(sortState);
-			
+		//Call the ADC function 	
 
-			//adc_result = adc_read(ADC_Channel);
-			
-			
-			// printf("Safe to run!  \n");	
-			/*if(adc_result > Max_Curren)
-			{
-			// printf("Shit should stop!\n");
-			//mode = 0;		
-			}
-			*/
-
-
-											
-
-			/*			
-				adc_result = 0.19 * adc_read(ADC_Channel) - 25; // Untested !!!!!!!!!!!!!!!!!!!!!
-			*/
-
-			
-		//}
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 							
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
-
-	//	while(status == 20){
-			// printf("Not Safe to run!  \n");	
-		//	StopDrive();
-			
-			
-				
-	//	}
-		
-
-		
+	    
 	}
+	
+	
+	CalculatePwm(error);  
+	
+	printf("The error is %d   and new data = %d \n",error, new_data);
+	
 }
-
+	

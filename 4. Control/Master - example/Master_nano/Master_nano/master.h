@@ -54,7 +54,7 @@ typedef struct Gps_data
 
 typedef struct Motor_data
 {
-	char mode;
+	uint8_t mode;
 	int error;	
 }Motor_data;
 

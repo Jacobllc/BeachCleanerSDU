@@ -149,6 +149,8 @@ void scan_i2c(void)
 	int addresses_max = 0xF7;
 	uint8_t logic;
 	
+	printf("Finding the devices on the BUS\n");
+	
 	for (int i=addresses_min; i<=addresses_max; i++)
 	{	
 		if(!(logic=i2c_start(i<<1 | I2C_WRITE)))

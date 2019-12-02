@@ -13,9 +13,8 @@
 
  #define F_CPU 16000000UL
  
- #define rampslow_scale 390
- #define rampfast_scale 4
- #define safty_scale 1560
+ #define rampslow_scale 100
+ #define safty_scale 400
  
  #include <stdio.h>
  #include <avr/io.h>
@@ -24,46 +23,57 @@
  #include "PWM.h"
  #include "MACROS.h"
  
- #define MPWM_MAX 100
- #define MPWM_MIN 20
+ #define Zone3_MAX_PWM  255
+ #define Zone2_MAX_PWM  (255 * 0.7)
+ #define MPWM_MIN 50
+ #define ERROR_RIGHT 15
+ #define ERROR_LEFT -15
+ #define STEP ((PWM_MAX - MPWM_MIN)/error)
+ 
+ volatile int PWM_MAX;
+
+ 
+ typedef struct PWM_struct
+ {
+	 int desired_pwm_m1;
+	 int desired_pwm_m2;
+	 int desired_pwm_m3;
+	 int desired_pwm_m4;
+	 
+ }PWM_sturct;
+
+ PWM_sturct Motor_pwm;
  
  
- double M1_DutyCycle_n;
- double M2_DutyCycle_n;
- double M1_DutyCycle = MPWM_MIN;
- double M2_DutyCycle = MPWM_MIN;
  char kp_1 = 0.4;
  char kp_2 = 0.4;
  
  char sortState = 0;
 
 volatile int counter_rampslow=0;
-volatile int counter_rampfast=0;
 volatile int counter_safety=0;
 	
 //////////////////////         Timer0 Setup 
-void T0_init(void){
+void T0_init(void)
+{
 		TCCR0A |= (1 << COM0A1) | (0 << COM0A0); // set OC0A Clear OC0! on compare, sett OC0A at Bottom ( non inverting)
 		TCCR0A |= (1 << COM0B1) | (0 << COM0B0); // set OC0B to non-inverting mode
 		TCCR0A |= (1 << WGM00) | (1 << WGM01) | (1 << WGM02);  // set Timer0 to 8bit fast PWM mode		
-		OCR0A = 255; //duty cycle OCR0A PIN6
-		OCR0B = 255;//duty cycle OCR0B PIN5
+		OCR0A = 0; //duty cycle OCR0A PIND6		For motor 1 (motor left)
+		OCR0B = 0;//duty cycle OCR0B PIND5		For motor 2 (motor right)
 		TCCR0B |= (0 << CS00) | (1 << CS01) | (0 << CS02);			// 7.8kHz
 		//TIMSK0 |= (1 << TOIE0);
 }
 
 
 //////////////////////         Timer1 Setup 
-void T1_init(void){
-		TCCR1A |= (1 << COM1A1) | (0 << COM1A0);
-		TCCR1A |= (1 << COM1B1) | (0 << COM1B0);
-		TCCR1A |= (0<<WGM13) | (1<<WGM12) | (1<<WGM11) |(1<<WGM10);   // set Timer1 to 16bit fast PWM
-		OCR1A = 30000;  //duty cycle OCR0A PIN13
-		OCR1B = 30000;  //duty cycle OCR0B PIN14
-		TCCR1B |= (1<<CS12) | (0<<CS11) | (1 << CS10);				  // set pre-scaler to 64 FREQ - 7.8kHz
-		//TIMSK1 |= (1 << TOIE1 );
-		
-		
+void T1_init(void)
+{
+		TCCR1A = 0;
+		TCNT1 = 0;
+		OCR1A = 3999;  //duty cycle OCR0A PIN13
+		TCCR1B |= (0<<CS12) | (0<<CS11) | (1 << CS10) | (1 << WGM12);				  // set pre-scaler to 64 FREQ - 7.8kHz
+		TIMSK1 |= (1 << OCIE1A );			
 }
 
 
@@ -72,10 +82,10 @@ void T2_init(void){
 		TCCR2A |= (1 << COM2A1) | (0 << COM2A0);			    // set OC2A to non-inverting mode
 		TCCR2A |= (1 << COM2B1)	| (0 << COM2B0);			    // set OC2B to non-inverting mode
 		TCCR2A |= (1<<WGM22) | (1 << WGM21) | (1 << WGM20);	// Time2 to 8bit fast PWM mode
-		OCR2A =  128;
-		OCR2B =  128;
+		OCR2A =  0;	//duty cycle OCR2A  PIND11   For motor 3 (motor PICKUP )
+		OCR2B =  0;	//duty cycle OCR2B  PIND3     For motor 4 (motor ORGER )
 		TCCR2B |= (0 << CS22) | (1 << CS21) | (0 << CS20);					// 7.8kHz
-		TIMSK2 |= (1 << TOIE2 );
+		//TIMSK2 |= (1 << TOIE2 );
 }
 			
 
@@ -88,231 +98,301 @@ void TimersInit(void){
 		
 //////////////////////         Motor functions
 
-void StopDrive(void){
+
+void PWM_init(void)
+{
+	Motor_pwm.desired_pwm_m1=0;
+	Motor_pwm.desired_pwm_m2=0;
+	Motor_pwm.desired_pwm_m3=0;
+	Motor_pwm.desired_pwm_m4=0;
+}
+
+
+void set_pwm(int value)
+{
+		Motor_pwm.desired_pwm_m1=value;
+		Motor_pwm.desired_pwm_m2=value;
+		Motor_pwm.desired_pwm_m3=value;
+		Motor_pwm.desired_pwm_m4=value;
+}
+
+
+void change_pwm_slow(void)
+{
 	
-	M1_DutyCycle = 0;
-	M2_DutyCycle = 0;
-	sortState = 0;
-	Sorting(sortState);
-	SetDrive(M1_DutyCycle, M2_DutyCycle);
+	if (Motor_pwm.desired_pwm_m3>OCR0A)
+	{	
+		if (OCR0A<MPWM_MIN)
+		{
+			OCR0A=MPWM_MIN;
+		}
+		else
+		{
+			OCR0A++;		
+		}
+	}
 	
+	if (Motor_pwm.desired_pwm_m3<OCR0A)
+	{
+		if (OCR0A>MPWM_MIN)
+		{
+			OCR0A--;
+		}
+		else
+		{
+			OCR0A=0;
+		}
+	}
+	
+	
+	
+	
+	
+	if (Motor_pwm.desired_pwm_m4>OCR0B)
+	{
+		if (OCR0B<MPWM_MIN)
+		{
+			OCR0B=MPWM_MIN;
+		}
+		else
+		{
+			OCR0B++;
+		}
+	}
+	
+	if (Motor_pwm.desired_pwm_m4<OCR0B)
+	{
+		if (OCR0B>MPWM_MIN)
+		{
+			OCR0B--;
+		}
+		else
+		{
+			OCR0B=0;
+		}
+	}
+	
+}
+
+void change_pwm_fast(void)
+{
+	
+	if (Motor_pwm.desired_pwm_m1>OCR2A)
+	{
+		if (OCR2A<MPWM_MIN)
+		{
+			OCR2A=MPWM_MIN;
+		}
+		else
+		{
+			OCR2A++;
+		}
+	}
+		
+	if (Motor_pwm.desired_pwm_m1<OCR2A)
+	{
+		if (OCR2A>MPWM_MIN)
+		{
+			OCR2A--;
+		}
+		else
+		{
+		OCR2A=0;
+		}
+	}
+		
+		
+		
+		
+		
+	if (Motor_pwm.desired_pwm_m4>OCR2B)
+	{
+		if (OCR2B<MPWM_MIN)
+		{
+			OCR2B=MPWM_MIN;
+		}
+		else
+		{
+			OCR2B++;
+		}
+	}
+		
+	if (Motor_pwm.desired_pwm_m4<OCR2B)
+	{
+		if (OCR2B>MPWM_MIN)
+		{
+			OCR2B--;
+		}
+		else
+		{
+			OCR2B=0;
+		}
+	}
 	
 }
 
 
 
-void Sorting(char sortState){
+void motor_handler(void)
+{
+	PWM_MAX = Zone3_MAX_PWM;
 	
-	if(sortState == 1){
-		OCR0A = 255;
-		OCR0B = 255;
-		OCR1A = 255;	
-	}
+	switch(zone)
+	{
 	
-	if(sortState == 0){
-		OCR0A = 0;
-		OCR0B = 0;
-		OCR1A = 0;
-		
-	}
-	
-}
-
-void CalculatePwm(uint8_t error, uint8_t Zone){
-	
-	switch(Zone){
-		case 1:
-		M1_DutyCycle_n = 100 - kp_1 * error;
-		M2_DutyCycle_n = 100 - kp_2 * error;
-		break;
-		
-		case 2:
-		M1_DutyCycle_n = 70 - kp_1 * error;
-		M2_DutyCycle_n = 70 - kp_2 * error;
-		break;
-		
-		case 3:
+	case 0:
+		// Waiting for instruction from master
 		StopDrive();
+		stop_sort();
 		break;
+	
+	case 1:
+		StopDrive();
+		// Do ADC calculation
+		break;
+		
+	case 2:
+		
+		PWM_MAX = Zone2_MAX_PWM;
+	
+	case 3:	
+		CalculatePwm(error);
+		break;
+		
+	case 4:
+		startup_sort();
+		break;		
 	}
 }
 
-void StartDrive(void){
+
+
+void CalculatePwm(int error)
+{
 	
-	PinState(pd7, high);			// H-Bridge Enable pin Motor 1
-	PinState(pb0, high);		    // H-Bridge Enable pin Motor 2
-	
-	while(M1_DutyCycle < 100 && M2_DutyCycle < 100){
-		M1_DutyCycle += 10;
-		M2_DutyCycle += 10;
-		OCR2A =  (M1_DutyCycle/100)*254;			// DubyCycle Motor 1
-		OCR2B =  (M2_DutyCycle/100)*254;			// DutyCycle Motor 2
-		_delay_us(1);
-	
+if((error<ERROR_RIGHT)&&(error>ERROR_LEFT))
+	{
+		
+		PinState(pd3, high);
+		PinState(pb3, high);
+		
+		if (error>0)
+		{
+			Motor_pwm.desired_pwm_m3 = PWM_MAX - STEP * error;
+		}
+		
+		if (error<0)
+		{
+			Motor_pwm.desired_pwm_m4 =  PWM_MAX - STEP * error;
+		}
+		
+		
+		
 	}
+	
+else
+	{
+		if (error>ERROR_RIGHT)
+		{
+			StopDrive();
+			turn_left();
+		}
+		
+		if (error<ERROR_LEFT)
+		{
+			StopDrive();
+			turn_right();
+		}		
+	}		
+}
+	
+	
+void startup_sort(void)
+{
+	PinState(pd6, high);
+	PinState(pd5, high);
+	
+	Motor_pwm.desired_pwm_m1 = Zone3_MAX_PWM;
+	Motor_pwm.desired_pwm_m2 = Zone3_MAX_PWM;
+}
+
+void stop_sort(void)
+{
+	Motor_pwm.desired_pwm_m1 = 0;
+	Motor_pwm.desired_pwm_m2 = 0;
+	
+}
+
+void StopDrive(void)
+{
+	Motor_pwm.desired_pwm_m3 = 0;
+	Motor_pwm.desired_pwm_m4 = 0;	
 }
 
 
-void SetDrive(double M1_DutyCycle, double M2_DutyCycle){
-		
-			if(M1_DutyCycle < MPWM_MIN)
-			{
-				M1_DutyCycle = MPWM_MIN;
-			}
-			
-			if (M2_DutyCycle < MPWM_MIN)
-			{
-				M2_DutyCycle = MPWM_MIN;
-			}
-			
-						if(M1_DutyCycle < 0)
-						{
-							M1_DutyCycle = 0;
-						}
-						
-						if (M2_DutyCycle < 0)
-						{
-							M2_DutyCycle = 0;
-						}
-						
-			if((error > 90) || (error < -90)){
-//								   Turning ... 				
-							if(error > 90){
-								PinState(pd7, low);							 // H-Bridge Enable pin Motor 1
-								PinState(pb0, low);							 // H-Bridge Enable pin Motor 2
-								OCR2A =  (M1_DutyCycle/100)*254;			// DubyCycle Motor 1
-								OCR2B =  (M2_DutyCycle/100)*254;			// DutyCycle Motor 2
-							}
-//									Turning ... 
-									if(error < -90){
-									PinState(pd7, high);							 // H-Bridge Enable pin Motor 1
-									PinState(pb0, high);							 // H-Bridge Enable pin Motor 2
-									OCR2A =  (M1_DutyCycle/100)*254;			// DubyCycle Motor 1
-									OCR2B =  (M2_DutyCycle/100)*254;			// DutyCycle Motor 2
-														}
+void turn_right(void)
+{
+	PinState(pd3, high);
+	PinState(pb3, low);
+	
+	Motor_pwm.desired_pwm_m3 = Zone3_MAX_PWM;
+	Motor_pwm.desired_pwm_m4 = Zone3_MAX_PWM;	
+}
+void turn_left(void)
+{
+	PinState(pd3, low);
+	PinState(pb3, high);
+	
+	Motor_pwm.desired_pwm_m3 = Zone3_MAX_PWM;
+	Motor_pwm.desired_pwm_m4 = Zone3_MAX_PWM;
+	
+}
 
-			}
-			
+void Drive_forward(void)
+{
+	PinState(pd3, high);
+	PinState(pb3, high);
+	
+	Motor_pwm.desired_pwm_m3 = Zone3_MAX_PWM;
+	Motor_pwm.desired_pwm_m4 = Zone3_MAX_PWM;
+}
 
-//									Turning ...
-								PinState(pd7, low);							 // H-Bridge Enable pin Motor 1
-								PinState(pb0, low);							 // H-Bridge Enable pin Motor 2
-								OCR2A =  (M1_DutyCycle/100)*254;			// DubyCycle Motor 1
-								OCR2B =  (M2_DutyCycle/100)*254;			// DutyCycle Motor 2								
-
-
-		/*									L298 H-Bridge 
-		//  Break
-		if(M_Direc == 0b0000){
-		PinState(pd4, low);  // L298 in1
-		PinState(pd7, low);  // L298 in2
-		PinState(pb0, low);  // L298 in3
-		PinState(pb4, low);  // L298 in4
-				printf("Direc Break Set \n");
-		}
-			
-		//  Forward
-		if(M_Direc == 0b0101){ // 0101
-		PinState(pd4, low);  // L298 in1
-		PinState(pd7, high);  // L298 in2
-		PinState(pb0, low);  // L298 in3
-		PinState(pb4, high);  // L298 in4
-				printf("Direc Forward Set \n");
-		}
-		
-		// Turn - ?
-		if(M_Direc == 0b0110){   // 0110
-		PinState(pd4, low);  // L298 in1
-		PinState(pd7, high);  // L298 in2
-		PinState(pb0, high);  // L298 in3
-		PinState(pb4, low);  // L298 in4
-				printf("Direc Turn 1 Set \n");
-		}
-		
-		
-		// Turn - ?
-		if(M_Direc == 0b1001){  // 1001
-		PinState(pd4, high);  // L298 in1
-		PinState(pd7, low);  // L298 in2
-		PinState(pb0, low);  // L298 in3
-		PinState(pb4, high);  // L298 in4
-				printf("Direc Turn 2 Set \n");
-		}
-
-		//  Backward
-		if(M_Direc == 0b1010){ // 1010
-		PinState(pd4, high);  // L298 in1
-		PinState(pd7, low);  // L298 in2
-		PinState(pb0, high);  // L298 in3
-		PinState(pb4, low);  // L298 in4
-				printf("Direc Set \n");
-		}
-		*/
-
-			}
-
-/*
-
-
-///////////////             PWM PINS
-Nr		Register		PORTnx			State				Timerx
-3		OC2B			PORTD3			DDRD3/Output		Timer2
-5		OC0B			PORTD5			DDRD5/Output		Timer1
-6		OC0A			PORTD6			DDRD6/Output		Timer0
-9		OC1A			PORTB1			DDRB1/Output		Timer0
-10		OC1B			PORTB2			DDRB2/Output		Timer1
-12		OC2A			PORTB3			DDRB2/Output		Timer2
-
-
-////////////////			Prescaler Settings
-			CA02	CA01	CS00
-			0		0		0		Prescaler = Timer Stopped
-			0		0		1		Prescaler =	1
-			0		1		0		Prescaler = 8
-			0		1		1		Prescaler = 64
-			1		0		0		Prescaler = 256
-			1		0		1		Prescaler = 1024
-			1		1		0		Prescaler = external clk T0 pin Falling edge
-			1		1		1		Prescaler = external clk T0 Pin Rising edge
-			
-			
-//						TIMER0 Counter
-//			OCR0A = 128;					       // duty cycle OCR0A PD6
-//			OCR0B = 255;						   // duty cycle OCR0B PD5
-//						TIMER1 Counter
-//			OCR1A = 255;					      // duty cycle OCR1A PB1
-//			OCR1B = 255;						  // duty cycle OCR1B PB2
-//						TIMER2 Counter
-//			OCR2A = 255;					      // duty cycle OCR2A PD3
-//			OCR2B = 255;					      // duty cycle OCR2B PB3
-
-
-*/ 
+void Drive_backward(void)
+{
+	PinState(pd3, low);
+	PinState(pb3, low);
+	
+	Motor_pwm.desired_pwm_m3 = Zone3_MAX_PWM;
+	Motor_pwm.desired_pwm_m4 = Zone3_MAX_PWM;
+}
 
 
 
-
-ISR(TIMER2_OVF_vect)
+ISR(TIMER1_COMPA_vect)
 {
 	counter_rampslow++;
-	counter_rampfast++;
-	counter_safety++;
+	
+	if (zone!=1)
+	{
+		counter_safety++;
+	}
+	
+	Toggle(pd2);
 	
 	if (counter_rampslow>rampslow_scale)
 	{
-		//Toggle(pd2);
+		change_pwm_slow();
+		change_pwm_fast();
 		counter_rampslow=0;
 	}
 	
-	if (counter_rampfast>rampfast_scale)
-	{
-		//Toggle(pd2);
-		counter_rampfast=0;
-	}
-	
+
 	if (counter_safety>safty_scale)
 	{
 		Toggle(pd2);
-		counter_safety=0;
+		
 	}
+	
 }
+
+
