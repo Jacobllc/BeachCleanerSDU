@@ -29,12 +29,9 @@ int main(void)
 	IO_init();	   //
 	TimersInit();
 	Motor_init();
-	//Enable_ADC();
+	Enable_ADC();
 	i2c_init(I2C_ADDR);	
 	sei();
-	//DDRD |= (1 << DDD2);
-	//PORTD &= ~(1<< PORTD2);
-	//sei();
 		
     while(1) 
     {	
@@ -45,13 +42,8 @@ int main(void)
 			new_data = 0;	
 		}
 		
-		
-		
-		_delay_ms(1000);
-		//Call the ADC function 	
-		
-	
-	    
+		Calculate_ADC();  //Call the ADC function
+		  
 	}
 }
 	

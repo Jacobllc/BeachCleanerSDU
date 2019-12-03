@@ -11,14 +11,15 @@
 #ifndef ADC_SETUP_H_
 #define ADC_SETUP_H_
 
-
-uint16_t adc_result;
-uint8_t  Max_Curren;
-uint8_t  ADC_Channel;
-
+ float adc_result;
+ uint8_t  Max_Curren;
+ uint8_t  ADC_Channel;
+ float adcv1, adcc1;
+ int mes[3];
 
 void Enable_ADC(void);
 uint16_t adc_read(uint8_t adc_channel);
+void Calculate_ADC(void);
 
 
 

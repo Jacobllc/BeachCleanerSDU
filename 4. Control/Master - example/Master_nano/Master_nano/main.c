@@ -31,17 +31,17 @@
 		 while (1)
 		 {	
 			  data = get_data_8bit(Motor_status, Motor_address);
-			  printf(" Received status %d \n",data);
+			  //printf(" Received status %d \n",data);
+		 
+			 // printf(" Insert the zone to be sent\n");
+			 // scanf("%d",&motor.mode);
+			  send_data_8bit(Motor_zone, Motor_address, 2);
 			  
-			  printf(" Insert the zone to be sent\n");
-			  scanf("%d",&motor.mode);
-			  send_data_8bit(Motor_zone, Motor_address, motor.mode);
+			  //printf(" Insert the error to be sent\n");
+		      //scanf("%d",&motor.error);
+			  send_data_int(Motor_error, Motor_address, 0);
 			  
-			    printf(" Insert the error to be sent\n");
-			    scanf("%d",&motor.error);
-			    send_data_int(Motor_error, Motor_address, motor.error);
-			  
-			  _delay_ms(50);
+			  _delay_ms(100);
 	
 			// data = get_data_8bit(Motor_status, Motor_address);
 		    // printf(" Received status %d \n",data);

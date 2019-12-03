@@ -34,9 +34,9 @@ void Motor_init(void);
 void set_pwm(int value);
 void print_pwm(void);
 
-void change_pwm_slow(void);
+void change_pwm_sort(void);
 
-void change_pwm_fast(void);
+void change_pwm_drive(void);
 
 void motor_handler(void);
 

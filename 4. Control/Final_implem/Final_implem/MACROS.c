@@ -18,7 +18,7 @@ void IO_init(void){	///////////////////////// Initial Pin Setup
 	DDRB  = 0b00001011;
 	PORTB = 0b00000000;
 	
-	DDRC  = 0b00001111;
+	DDRC  = 0b00000000;
 	PORTC = 0b00000000;
 	
 	DDRD  = 0b11101000;

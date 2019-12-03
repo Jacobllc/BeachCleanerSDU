@@ -13,7 +13,7 @@
 
  #define F_CPU 16000000UL
  #define rampslow_scale 100
- #define safty_scale 400
+ #define safty_scale 2000
  
  #include <stdio.h>
  #include <avr/io.h>
@@ -31,6 +31,7 @@
  #define STEP ((PWM_MAX - MPWM_MIN)/(ERROR_RIGHT))
  
  volatile int PWM_MAX;
+ uint8_t Hardstop=0;
 
  
  typedef struct PWM_struct
@@ -109,8 +110,6 @@ void Motor_init(void)
 	
 	PinState(pd4, low);
 	
-	
-	
 }
 
 
@@ -123,7 +122,7 @@ void set_pwm(int value)
 }
 
 
-void change_pwm_slow(void)
+void change_pwm_sort(void)
 {
 	
 	if (Motor_pwm.desired_pwm_m1>OCR0A)
@@ -180,7 +179,7 @@ void change_pwm_slow(void)
 	
 }
 
-void change_pwm_fast(void)
+void change_pwm_drive(void)
 {
 	
 	if (Motor_pwm.desired_pwm_m3>OCR2A)
@@ -248,26 +247,28 @@ void motor_handler(void)
 	
 	case 0:
 		// Waiting for instruction from master
+		Hardstop=1;
 		StopDrive();
 		stop_sort();
 		break;
 	
 	case 1:
+		Hardstop=1;
 		StopDrive();
 		// Do ADC calculation
 		break;
 		
 	case 2:
-		
 		PWM_MAX = Zone2_MAX_PWM;
 	
 	case 3:	
+		Hardstop=0;
 		CalculatePwm(error);
+		counter_safety=0;
 		break;
 		
 	case 4:
 		startup_sort();
-		printf("sorting!!\n");
 		break;		
 	}
 }
@@ -307,16 +308,22 @@ if((error<=ERROR_RIGHT)&&(error>=ERROR_LEFT))
 	
 else
 	{
-	
+		
+		
+		
 		
 		if (error>ERROR_RIGHT)
 		{
+			
 			turn_left();
+			
 		}
 		
 		if (error<ERROR_LEFT)
 		{
-			turn_right();	
+	
+			turn_right();
+		
 		}		
 	}		
 }
@@ -406,24 +413,35 @@ ISR(TIMER1_COMPA_vect)
 {
 	counter_rampslow++;
 	
-	if (zone!=1)
+	if (zone>1)
 	{
 		counter_safety++;
 	}
 	
 	Toggle(pd2);
 	
+	
+	if (Hardstop==1)
+	{
+		change_pwm_drive();
+		change_pwm_sort();
+	}
+	
+	
 	if (counter_rampslow>rampslow_scale)
 	{
-		change_pwm_slow();
-		change_pwm_fast();
+		change_pwm_sort();
+		change_pwm_drive();
 		counter_rampslow=0;
 	}
 	
 
 	if (counter_safety>safty_scale)
 	{
-		Toggle(pd2);	
+		Hardstop=1;
+		StopDrive();
+		stop_sort();
+		counter_safety=0;	
 	}
 	
 }
