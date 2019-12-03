@@ -19,7 +19,6 @@
 /////////////////// Device addresses/////////////////////////////////
 #define GPS_address 0x40
 #define Motor_address 0x41
-#define Dist_adress 0x42
 
 /////////////////// GPS Commands/////////////////////////////////
 #define Direction 0x01
@@ -29,13 +28,7 @@
 #define Motor_status 0x00
 #define Motor_error 0x01
 #define Motor_zone 0x02
-///////////////////Distance commands///////////////////////////////
-#define Get_Zone 0x05
-#define Get_Sensor1 0x01
-#define Get_Sensor2 0x02
-#define Get_Sensor3 0x03
-#define Get_Sensor4 0x04
-
+/////////////////////////////////////////////////////////////////
 
  char Gps_update;
  char status;
@@ -65,20 +58,12 @@ typedef struct Motor_data
 	int error;	
 }Motor_data;
 
-
-typedef struct Dist_data
-{
-	uint8_t Zone;	
-	uint16_t dist[4];
-}Dist_data;
-
-
 Gps_data Gps;
 counter Gps_counter;
 counter Compass_counter;
 
 Motor_data motor;
-Dist_data Dist;
+
 
 
 void Gps_init(void);

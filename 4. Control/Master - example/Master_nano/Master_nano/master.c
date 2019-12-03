@@ -122,14 +122,7 @@ void update_motor_data (void)
 	
 }
 	
-void update_sensor_data (void)
-{
-	Dist.Zone = get_data_8bit(Get_Zone, Dist_adress);
-	Dist.dist[0] = get_data_int(Get_Sensor1, Dist_adress);
-	Dist.dist[1] = get_data_int(Get_Sensor2, Dist_adress);
-	Dist.dist[2] = get_data_int(Get_Sensor3, Dist_adress);
-	Dist.dist[3] = get_data_int(Get_Sensor4, Dist_adress);
-}
+
 
 
 ISR(INT0_vect)
