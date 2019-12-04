@@ -87,7 +87,7 @@ void Transmit_dist_bearing_i2C(struct DATA *GPS_Data)
 		//Convert dist and bearing  
 		//Sending dist to DATA struct as long int 
 		long dist_send;
-		dist_send = (long)((GPS_Data->dist_wp) *1000);
+		dist_send = (long)((GPS_Data->dist_wp));
 		GPS_Data->dist_sendI2C = dist_send; 
 		
 		// Sending bearing to DATA struct as int 
