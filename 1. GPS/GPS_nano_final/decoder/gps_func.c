@@ -69,7 +69,7 @@ void bearing_to_wp(struct DATA *GPS_Data, coor_t WP){
 	}
 	if(d<0 && c>0){ //2. quatrant
 		angle = atan2(d, c);
-		angle = (angle) +(2*PI);
+		angle = (angle) + (2*PI);
 	}
 	if(d<0 && c<0){ //3. quatrant
 		angle = atan2(d, c);
@@ -92,6 +92,6 @@ void Transmit_dist_bearing_i2C(struct DATA *GPS_Data)
 		
 		// Sending bearing to DATA struct as int 
 		int bearing_send;
-		bearing_send = (int)( (GPS_Data->bearing_wp/360)*32767 );
+		bearing_send = (int) (GPS_Data->bearing_wp);
 		GPS_Data->bearing_sendI2C = bearing_send; 
 }
