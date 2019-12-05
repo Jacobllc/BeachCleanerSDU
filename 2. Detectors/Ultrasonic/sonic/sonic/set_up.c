@@ -1,7 +1,9 @@
 
 #include "set_up.h"
 
-int obs,flag,zone=0;
+//zone=0; 
+
+int obs,flag; 
 void init_io(){
 	//Sensor1
 	DDRD |= (1<<DDD4); //PD3 is an output (TRIG1)
@@ -15,6 +17,10 @@ void init_io(){
 	//Sensor 4
 	DDRD |= (1<<DDD6); // PD6 OUTPUT (TRIGGER)
 	DDRD &= ~(1<<DDD5); // PD5 INOUT (ECCHO)
+	
+	//setting i2c io's 
+	//DDRC &= ~(1<<DDC4); // PC4 SDA (i2c)
+	//DDRC &= ~(1<<DDC5); // PC5 SCL (i2c)
 }
 int getdist1(void){
 
@@ -133,11 +139,11 @@ ISR (INT0_vect)// EXTERNAL INTERRUPT 0
 int distance (void)
 {
 	int n = 30;		// Samples per average
-	int s = 4;		// Number of sensors
+	//int s = 4;		// Number of sensors
 	int i;
 	
 	volatile int distance_1_array[n], distance_2_array[n], distance_3_array[n], distance_4_array[n];
-	volatile int av_distance_array[s];
+	//volatile int av_distance_array[4];
 	volatile int sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0;
 	
 	for (i=0; i<n; i++)
@@ -177,7 +183,7 @@ int distance (void)
 	//printf(" sum: %d  distance: %d  %d   ",sum1,av_distance_array[1],av_distance_array[2]);
 	//printf("%d  %d \n",av_distance_array[3],av_distance_array[4]);
 	printf("%d  %d  %d  %d",av_distance_array[1],av_distance_array[2],av_distance_array[3],av_distance_array[4]);
-	
+	//printf("dist1: %d", distance_1_array[1]);
 	//Determine the zone
 	if ((av_distance_array[1])>=41 && (av_distance_array[2])>=41 && (av_distance_array[3])>=41 && (av_distance_array[4])>=41) zone=3;
 	if (((av_distance_array[1])<=40 || (av_distance_array[2])<=40 ||(av_distance_array[3])<=40 || (av_distance_array[4])<=40) && ((av_distance_array[1])>=21 && (av_distance_array[2])>=21 && (av_distance_array[3])>=21) &&  (av_distance_array[4])>=21) zone=2;

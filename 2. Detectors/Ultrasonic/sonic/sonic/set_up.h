@@ -12,6 +12,10 @@
 #ifndef SET_UP_H_
 #define SET_UP_H_
 
+uint8_t zone; 
+volatile int av_distance_array[4];
+
+
 void init_io(void);
 void init_timers(void);
 
