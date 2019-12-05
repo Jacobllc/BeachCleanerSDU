@@ -6,6 +6,8 @@
  */ 
 #define F_CPU 16000000UL
 #include <avr/io.h>
+#include <stdio.h>
+#include <avr/interrupt.h>
 
 #ifndef SET_UP_H_
 #define SET_UP_H_

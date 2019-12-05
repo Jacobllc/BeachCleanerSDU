@@ -4,5 +4,7 @@
 
 main.c
 
+set_up.c
+
 usart.c
 
