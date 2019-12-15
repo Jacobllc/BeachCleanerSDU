@@ -4,6 +4,7 @@
 //zone=0; 
 
 int obs,flag; 
+
 void init_io(){
 	//Sensor1
 	DDRD |= (1<<DDD4); //PD3 is an output (TRIG1)
@@ -17,10 +18,6 @@ void init_io(){
 	//Sensor 4
 	DDRD |= (1<<DDD6); // PD6 OUTPUT (TRIGGER)
 	DDRD &= ~(1<<DDD5); // PD5 INOUT (ECCHO)
-	
-	//setting i2c io's 
-	//DDRC &= ~(1<<DDC4); // PC4 SDA (i2c)
-	//DDRC &= ~(1<<DDC5); // PC5 SCL (i2c)
 }
 int getdist1(void){
 
@@ -41,6 +38,7 @@ while ((PIND & (1<<PORTD3)) && TCNT1 < 5900); //stay here until data form echo i
 dis = ( (int)TCNT1/2)/58;
 return dis;
 }
+
 int getdist2(void){
 	//PB2 TRIGGER PB1 ECHO
 
@@ -98,9 +96,11 @@ int getdist4(void){
 	return dis;
 	
 }
-void init_timers(){
+void init_timers()
+{
 	TCCR1B = (1<<CS11);
 }
+
 void min_dist(int dis)
 {
 	if((getdist1()>dis) && (getdist2()>dis) && (getdist3()>dis) && (getdist4()>dis))
@@ -171,19 +171,6 @@ int distance (void)
 	av_distance_array[3] = sum3/n;
 	av_distance_array[4] = sum4/n;	
 	
-	
-	// test values for the zone parameters
-	/*
-	av_distance_array[1] = 25;
-	av_distance_array[2] = 25;
-	av_distance_array[3] = 25;
-	av_distance_array[4] = 45;
-	*/
-	
-	//printf(" sum: %d  distance: %d  %d   ",sum1,av_distance_array[1],av_distance_array[2]);
-	//printf("%d  %d \n",av_distance_array[3],av_distance_array[4]);
-	printf("%d  %d  %d  %d",av_distance_array[1],av_distance_array[2],av_distance_array[3],av_distance_array[4]);
-	//printf("dist1: %d", distance_1_array[1]);
 	//Determine the zone
 	if ((av_distance_array[1])>=41 && (av_distance_array[2])>=41 && (av_distance_array[3])>=41 && (av_distance_array[4])>=41) zone=3;
 	if (((av_distance_array[1])<=40 || (av_distance_array[2])<=40 ||(av_distance_array[3])<=40 || (av_distance_array[4])<=40) && ((av_distance_array[1])>=21 && (av_distance_array[2])>=21 && (av_distance_array[3])>=21) &&  (av_distance_array[4])>=21) zone=2;

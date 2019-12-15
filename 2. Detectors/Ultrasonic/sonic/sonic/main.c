@@ -17,8 +17,8 @@
 int main(void)
 {
 	i2c_init(address);  //init i2c transmiission
-    uart_init(); //open comms to microcontroller (Realterm)
-    io_redirect();
+    //uart_init(); //open comms to microcontroller (Realterm)
+    //io_redirect();
 	init_timers();
 	deadswitch(); // the switches will be implemented with an extension of the same trigger pin
 	
@@ -27,9 +27,10 @@ int main(void)
     while (1) 
     {
 		int zone; 
+		
 		zone = distance();
 		
-		printf(" ZONE: %d \n",zone);
+		//printf(" ZONE: %d \n",zone);
 		
 		if (TCNT1 == 5900) // toggle pin every time you read the four sensors. XOR the pin to see it
 		{
