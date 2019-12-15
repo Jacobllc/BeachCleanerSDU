@@ -64,18 +64,18 @@ void bearing_to_wp(struct DATA *GPS_Data, coor_t WP){
 	if(d==0){ d=0.000001;};
 	
 	float angle;
-	if(d>0 && c>0){ //1. quatrant
+	if(d>0 && c>0){ //1. quadrant
 		angle = atan2(d, c);
 	}
-	if(d<0 && c>0){ //2. quatrant
-		angle = atan2(d, c);
-		angle = (angle) + (2*PI);
-	}
-	if(d<0 && c<0){ //3. quatrant
+	if(d<0 && c>0){ //2. quadrant
 		angle = atan2(d, c);
 		angle = (angle) + (2*PI);
 	}
-	if(d>0 && c<0){ //4. quatrant
+	if(d<0 && c<0){ //3. quadrant
+		angle = atan2(d, c);
+		angle = (angle) + (2*PI);
+	}
+	if(d>0 && c<0){ //4. quadrant
 		angle = atan2(d, c);
 	}
 	

@@ -52,10 +52,10 @@ int main(void)
 			bearing_to_wp(&NMEA1, WP[WP_NUM]);			//Calculating bearing from pos and WP
 			Transmit_dist_bearing_i2C(&NMEA1);			//Transmitting via I2C
 			
-			PORTC |= (1<<PORTC0);						//Set data_ready_flag HIGH When bearing and distance has been send.
+			PORTC |= (1<<PORTC0);						//Set data_ready_flag HIGH When bearing and distance is ready to be recieved by master
 		}
 		
-		if(NMEA1.dist_wp<1000 && NMEA1.dist_wp>10 && WP_NUM<4)
+		if(NMEA1.dist_wp<1000 && NMEA1.dist_wp>10 && WP_NUM<4)   //change to new way-point when closer than 1m  
 		WP_NUM++;
 		
 	}
